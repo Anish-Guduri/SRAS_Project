@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 function SplashScreen({ navigation }) {
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Home")}
+      onPress={() => navigation.navigate("Welcome")}
       style={styles.container}
     >
       <Image

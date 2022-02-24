@@ -8,15 +8,39 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import { initializeApp } from "firebase/app";
+import { authentication } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 function RegisterScreen({ navigation }) {
+  const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [name, setName] = React.useState("");
-  const [phoneNumber, setPhoneNumber] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [errorName, seterrorName] = React.useState("");
-  const [errorPhoneNumber, seterrorPhoneNumber] = React.useState("");
+  const [errorEmail, seterrorEmail] = React.useState("");
   const [errorPassword, seterrorPassword] = React.useState("");
   const [errorConfirmPassword, seterrorConfirmPassword] = React.useState("");
+
+  // function handleLogIn() {
+  //   firebase.auth().onAuthStateChanger((user) => {
+  //     if (user) {
+  //       navigation.navigate("OTPScreen");
+  //     } else {
+  //       navigation.navigate("RegisterScreen");
+  //     }
+  //   });
+  // }
+  // const auth = getAuth();
+  const RegisterUser = () => {
+    createUserWithEmailAndPassword(authentication, email, password)
+      .then((re) => {
+        console.log(re);
+      })
+      .catch((re) => {
+        console.log(re);
+      });
+  };
 
   function validateName(name) {
     let alpha = /^[a-zA-Z][a-zA-Z ]*$/;
@@ -27,12 +51,12 @@ function RegisterScreen({ navigation }) {
       return false;
     }
   }
-  function validateMobileNumber(mobileNumber) {
-    let num = /^[6789]\d{9}$/;
-    if (num.test(mobileNumber)) {
+  function validateEmail(mail) {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(mail)) {
       return true;
     } else {
-      seterrorPhoneNumber("please enter valid mobile number");
+      seterrorEmail("please enter valid email");
       return false;
     }
   }
@@ -53,7 +77,7 @@ function RegisterScreen({ navigation }) {
   }
   function validate() {
     let val1 = validateName(name);
-    let val2 = validateMobileNumber(phoneNumber);
+    let val2 = validateEmail(email);
     let val3 = validatePassword(password);
     let val4 = validateConfirmPassword(confirmPassword, password);
     if (val1 && val2 && val3 && val4) {
@@ -87,13 +111,12 @@ function RegisterScreen({ navigation }) {
       <Text style={{ marginLeft: 28 }}>Mobile number</Text>
       <TextInput
         style={styles.textInpt}
-        placeholder="Enter Mobile Number"
-        keyboardType="numeric"
-        value={phoneNumber}
-        onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
-        onFocus={() => seterrorPhoneNumber("")}
+        placeholder="Enter email"
+        value={email}
+        onChangeText={(email) => setEmail(email)}
+        onFocus={() => seterrorEmail("")}
       />
-      <Text style={styles.errorText}>{errorPhoneNumber}</Text>
+      <Text style={styles.errorText}>{errorEmail}</Text>
       <Text style={{ marginLeft: 28 }}>Password</Text>
       <TextInput
         secureTextEntry={true}
@@ -115,7 +138,7 @@ function RegisterScreen({ navigation }) {
       />
       <Text style={styles.errorText}>{errorConfirmPassword}</Text>
       <View style={{ alignItems: "center" }}>
-        <TouchableOpacity onPress={() => validate()} style={styles.btn}>
+        <TouchableOpacity onPress={RegisterUser} style={styles.btn}>
           <Text style={styles.btnText}>Get OTP</Text>
         </TouchableOpacity>
 

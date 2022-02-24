@@ -1,6 +1,8 @@
 import * as React from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { BackHandler, StyleSheet, Text, View } from "react-native";
+// import * as firebase from "firebase";
+// import { firebaseConfig } from "./config";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import WelcomeScreen from "./Screens/WelcomeScreen";
@@ -8,8 +10,10 @@ import LoginScreen from "./Screens/LoginScreen";
 import RegisterScreen from "./Screens/RegisterScreen";
 import SplashScreen from "./Screens/SplashScreen";
 import OTPScreen from "./Screens/OTPScreen";
+// import HomeScreen from "./Screens/HomeScreen";
 
 const Stack = createNativeStackNavigator();
+// firebase.initializeApp(firebaseConfig);
 
 export default function App() {
   return (
@@ -23,25 +27,24 @@ export default function App() {
           }}
         />
         <Stack.Screen
-          name="Home"
+          name="Welcome"
           component={WelcomeScreen}
           options={{
             headerShown: false,
           }}
         />
+        {/* <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            headerShown: false,
+          }}
+        /> */}
         <Stack.Screen
           name="Login"
           component={LoginScreen}
           options={{
             headerShown: false,
-            headerStyle: {
-              backgroundColor: "#207502",
-            },
-            headerTintColor: "#ffffff",
-            headerTitleStyle: {
-              fontWeight: "bold",
-              color: "#fff",
-            },
           }}
         />
         <Stack.Screen
@@ -49,14 +52,6 @@ export default function App() {
           component={RegisterScreen}
           options={{
             headerShown: false,
-            headerStyle: {
-              backgroundColor: "#207502",
-            },
-            headerTintColor: "#ffffff",
-            headerTitleStyle: {
-              fontWeight: "bold",
-              color: "#fff",
-            },
           }}
         />
         <Stack.Screen
