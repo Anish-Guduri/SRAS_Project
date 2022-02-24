@@ -19,7 +19,6 @@ function RegisterScreen({ navigation }) {
   const [errorConfirmPassword, seterrorConfirmPassword] = React.useState("");
 
   function validateName(name) {
-    console.log(name);
     let alpha = /^[a-zA-Z][a-zA-Z ]*$/;
     if (alpha.test(name)) {
       return true;
@@ -29,7 +28,6 @@ function RegisterScreen({ navigation }) {
     }
   }
   function validateMobileNumber(mobileNumber) {
-    console.log(mobileNumber);
     let num = /^[6789]\d{9}$/;
     if (num.test(mobileNumber)) {
       return true;
@@ -39,7 +37,6 @@ function RegisterScreen({ navigation }) {
     }
   }
   function validatePassword(password) {
-    console.log(password);
     var regularExpression = /^[a-zA-Z0-9!@#$%^&*]{8,16}$/;
     if (regularExpression.test(password)) return true;
     else {
@@ -48,7 +45,6 @@ function RegisterScreen({ navigation }) {
     }
   }
   function validateConfirmPassword(confirmPassword, password) {
-    console.log(confirmPassword);
     if (confirmPassword == password) return true;
     else {
       seterrorConfirmPassword("password mismatch");
