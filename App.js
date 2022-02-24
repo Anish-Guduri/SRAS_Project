@@ -7,6 +7,7 @@ import WelcomeScreen from "./Screens/WelcomeScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import RegisterScreen from "./Screens/RegisterScreen";
 import SplashScreen from "./Screens/SplashScreen";
+import OTPScreen from "./Screens/OTPScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,13 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          name="Splash"
+          component={SplashScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="Home"
           component={WelcomeScreen}
@@ -25,6 +33,7 @@ export default function App() {
           name="Login"
           component={LoginScreen}
           options={{
+            headerShown: false,
             headerStyle: {
               backgroundColor: "#207502",
             },
@@ -39,6 +48,7 @@ export default function App() {
           name="Register"
           component={RegisterScreen}
           options={{
+            headerShown: false,
             headerStyle: {
               backgroundColor: "#207502",
             },
@@ -47,6 +57,13 @@ export default function App() {
               fontWeight: "bold",
               color: "#fff",
             },
+          }}
+        />
+        <Stack.Screen
+          name="OTPScreen"
+          component={OTPScreen}
+          options={{
+            headerShown: false,
           }}
         />
       </Stack.Navigator>

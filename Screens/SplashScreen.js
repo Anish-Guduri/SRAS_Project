@@ -1,11 +1,17 @@
 import * as React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 function SplashScreen({ navigation }) {
   return (
-    <View>
-      <Image source={require("../assets/Logo.png")} />
-    </View>
+    <TouchableOpacity
+      onPress={() => navigation.navigate("Home")}
+      style={styles.container}
+    >
+      <Image
+        source={require("../assets/Logo.png")}
+        style={{ height: 200, width: 200 }}
+      />
+    </TouchableOpacity>
   );
 }
 
@@ -13,7 +19,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
 });
 
