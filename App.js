@@ -1,19 +1,17 @@
 import * as React from "react";
 import { StatusBar } from "expo-status-bar";
-import { BackHandler, StyleSheet, Text, View } from "react-native";
-// import * as firebase from "firebase";
-// import { firebaseConfig } from "./config";
+import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import WelcomeScreen from "./Screens/WelcomeScreen";
 import LoginScreen from "./Screens/LoginScreen";
 import RegisterScreen from "./Screens/RegisterScreen";
 import SplashScreen from "./Screens/SplashScreen";
+import HomeScreen from "./Screens/HomeScreen";
 import OTPScreen from "./Screens/OTPScreen";
-// import HomeScreen from "./Screens/HomeScreen";
+// import * as firebase from 'firebase';
 
 const Stack = createNativeStackNavigator();
-// firebase.initializeApp(firebaseConfig);
 
 export default function App() {
   return (
@@ -33,13 +31,7 @@ export default function App() {
             headerShown: false,
           }}
         />
-        {/* <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            headerShown: false,
-          }}
-        /> */}
+        <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen
           name="Login"
           component={LoginScreen}

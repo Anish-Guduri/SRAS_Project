@@ -6,26 +6,30 @@ import {
   ScrollView,
   TextInput,
   StatusBar,
+  Alert,
   TouchableOpacity,
 } from "react-native";
-// import * as firebase from "firebase";
+import { authentication } from "../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-// import { TextInput } from "react-native-paper";
-// import { Button } from "react-native-paper";
 function LoginScreen({ navigation }) {
-  const [phoneNumber, setPhoneNumber] = React.useState();
+  const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState("");
 
-  // handleSignIn();
-  // {
-  //   firebase.auth().onAuthStateChanged((user) => {
-  //     if (user) {
-  //       navigation.navigate("Home");
-  //     } else {
-  //       navigation.navigate("Login");
-  //     }
-  //   });
-  // }
+  const handleSignIn = () => {
+    signInWithEmailAndPassword(authentication, email, password)
+      .then((userCredential) => {
+        console.log("Signed in");
+        Alert.alert("Logged In Succesfully");
+        navigation.navigate("Home");
+        const user = userCredential.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        console.log(error);
+        Alert.alert(error.message);
+      });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -42,13 +46,12 @@ function LoginScreen({ navigation }) {
       >
         Login
       </Text>
-      <Text style={{ marginLeft: 28 }}>Mobile number</Text>
+      <Text style={{ marginLeft: 28 }}>Email</Text>
       <TextInput
         style={styles.textInpt}
-        placeholder="Enter Mobile Number"
-        keyboardType="numeric"
-        value={phoneNumber}
-        onChangeText={(text) => setPhoneNumber(text)}
+        placeholder="Enter email"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
       />
       <Text style={{ marginLeft: 28 }}>Password</Text>
       <TextInput
@@ -61,7 +64,7 @@ function LoginScreen({ navigation }) {
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity
           mode="contained"
-          onPress={() => navigation.navigate("Register")}
+          onPress={handleSignIn}
           style={styles.btn}
         >
           <Text style={styles.btnText}>LogIn</Text>
