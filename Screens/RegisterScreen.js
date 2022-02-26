@@ -7,10 +7,11 @@ import {
   StatusBar,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 
 import { authentication } from "../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 function RegisterScreen({ navigation }) {
   // const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [name, setName] = React.useState("");
@@ -26,9 +27,21 @@ function RegisterScreen({ navigation }) {
     if (validate()) {
       createUserWithEmailAndPassword(authentication, email, password)
         .then(() => {
+          const user = authentication.currentUser;
+          updateProfile(authentication.currentUser, {
+            displayName: name,
+          })
+            .then(() => {
+              Alert.alert("Profile Created successfully!");
+              console.log(
+                user.displayName + " " + user.email + " " + user.emailVerified
+              );
+            })
+            .catch((error) => {
+              Alert.alert(error.message);
+            });
           Alert.alert("Account created successfully!");
-          connsle.log;
-          navigation.replace("Home");
+          navigation.navigate("Home");
         })
         .catch((error) => {
           Alert.alert(error.message);
@@ -106,11 +119,12 @@ function RegisterScreen({ navigation }) {
         onFocus={() => seterrorName("")}
       />
       <Text style={styles.errorText}>{errorName}</Text>
-      <Text style={{ marginLeft: 28 }}>Mobile number</Text>
+      <Text style={{ marginLeft: 28 }}>Email</Text>
       <TextInput
         style={styles.textInpt}
         placeholder="Enter email"
         keyboardType="email-address"
+        autoCapitalize="none"
         value={email}
         onChangeText={(email) => setEmail(email)}
         onFocus={() => seterrorEmail("")}

@@ -8,7 +8,8 @@ import LoginScreen from "./Screens/LoginScreen";
 import RegisterScreen from "./Screens/RegisterScreen";
 import SplashScreen from "./Screens/SplashScreen";
 import HomeScreen from "./Screens/HomeScreen";
-import OTPScreen from "./Screens/OTPScreen";
+// import ForgotPasswordScreen from "./Screens/ForgotPasswordScreen";
+import ForgotPasswordScreen from "./Screens/ForgotPasswordScreen";
 // import * as firebase from 'firebase';
 
 const Stack = createNativeStackNavigator();
@@ -47,8 +48,8 @@ export default function App() {
           }}
         />
         <Stack.Screen
-          name="OTPScreen"
-          component={OTPScreen}
+          name="ForgotPasswordScreen"
+          component={ForgotPasswordScreen}
           options={{
             headerShown: false,
           }}

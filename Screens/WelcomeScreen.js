@@ -1,8 +1,36 @@
 import * as React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  BackHandler,
+  Alert,
+} from "react-native";
 import { Button } from "react-native-paper";
 
 function WelcomeScreen({ navigation }) {
+  // React.useEffect(() => {
+  //   const backAction = () => {
+  //     Alert.alert("Hold on!", "Are you sure you want to exit?", [
+  //       {
+  //         text: "Cancel",
+  //         onPress: () => null,
+  //         style: "cancel",
+  //       },
+  //       { text: "YES", onPress: () => BackHandler.exitApp() },
+  //     ]);
+  //     return true;
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     backAction
+  //   );
+
+  //   return () => backHandler.remove();
+  // }, []);
   return (
     <View style={styles.container}>
       <Image

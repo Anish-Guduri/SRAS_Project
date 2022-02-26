@@ -13,6 +13,15 @@ import { authentication } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 function LoginScreen({ navigation }) {
+  React.useEffect(() => {
+    let mount = true;
+
+    return () => {
+      mount = false;
+      setEmail("");
+      setPassword("");
+    };
+  }, []);
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState("");
 
@@ -22,6 +31,7 @@ function LoginScreen({ navigation }) {
         console.log("Signed in");
         Alert.alert("Logged In Succesfully");
         navigation.navigate("Home");
+
         const user = userCredential.user;
         console.log(user);
       })
@@ -51,9 +61,11 @@ function LoginScreen({ navigation }) {
         style={styles.textInpt}
         placeholder="Enter email"
         value={email}
+        keyboardType="email-address"
+        autoCapitalize="none"
         onChangeText={(text) => setEmail(text)}
       />
-      <Text style={{ marginLeft: 28 }}>Password</Text>
+      <Text style={{ marginTop: 26, marginLeft: 28 }}>Password</Text>
       <TextInput
         secureTextEntry={true}
         style={styles.textInpt}
@@ -61,6 +73,19 @@ function LoginScreen({ navigation }) {
         onChangeText={setPassword}
         value={password}
       />
+      <TouchableOpacity
+        style={{ alignItems: "flex-end", marginRight: "12%" }}
+        onPress={() => navigation.navigate("ForgotPasswordScreen")}
+      >
+        <Text
+          style={{
+            color: "#86340A",
+            textDecorationLine: "underline",
+          }}
+        >
+          Forgot password?
+        </Text>
+      </TouchableOpacity>
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity
           mode="contained"
@@ -109,7 +134,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginLeft: 28,
     marginTop: 6,
-    marginBottom: 22,
+    marginBottom: 4,
   },
   btn: {
     alignItems: "center",
