@@ -11,6 +11,7 @@ import {
   Alert,
 } from "react-native";
 import * as Location from "expo-location";
+import moment from "moment-timezone";
 import { authentication } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 function HomeScreen({ navigation }) {
@@ -18,7 +19,9 @@ function HomeScreen({ navigation }) {
   const [name, setName] = React.useState("");
   const [location, setLocation] = React.useState(null);
   const [errorMsg, setErrorMsg] = React.useState(null);
+  const [temp, setTemp] = React.useState("--");
   const [data, setData] = React.useState({});
+  const [price, setPrice] = React.useState("");
   React.useEffect(() => {
     onAuthStateChanged(authentication, (user) => {
       if (user) {
@@ -66,9 +69,9 @@ function HomeScreen({ navigation }) {
       Alert.alert(error.message);
     });
   }
-
-  let text = "Waiting..";
-  let longitude = "Waiting..";
+  let time = "Waiting...";
+  let text = "Waiting...";
+  let longitude = "Waiting...";
 
   if (errorMsg) {
     text = errorMsg;
@@ -82,17 +85,33 @@ function HomeScreen({ navigation }) {
   }
   let apiKey = "a766553fb96265daea1f178f66eed316";
   const fetchWeatherApiData = (latitude, longitude) => {
-    console.log(latitude + " " + longitude);
+    // console.log(latitude + " " + longitude);
     fetch(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&appid=${apiKey}`
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${apiKey}`
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data);
-        let temp = JSON.stringify(data.current.humidity);
-        console.log(temp);
+        // console.log(JSON.stringify(data));
+        setData(data);
+        setTemp(JSON.stringify(data.current.temp));
+        // console.log(data.current.sunrise);
       });
   };
+  let priceCrop = "  ";
+  const handlFetchCropPrice = (state, district, commodity) => {
+    console.log("Crop Price");
+    const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=579b464db66ec23bdd000001df20ab572c9b421b5111effe484d013c&format=json&limit=500&filters[state]=${state}&filters[district]=${district}&filters[commodity]=${commodity}`;
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert(data.records[2].market);
+        console.log(JSON.stringify(data));
+        priceCrop = data.records[0].market;
+        // setTemp(JSON.stringify(data.current.temp));
+        // console.log(data.current.sunrise);
+      });
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.replace("Welcome")}>
@@ -122,7 +141,37 @@ function HomeScreen({ navigation }) {
       <View style={{ marginTop: 28 }}>
         <Text style={{ marginTop: 8 }}>Latitude: {text}</Text>
         <Text style={{ marginTop: 8 }}>Longitude: {longitude}</Text>
-        <Text style={{ marginTop: 8 }}>Temperature: {longitude}</Text>
+        <Text style={{ marginTop: 8 }}>Temperature: {temp} &deg;C</Text>
+        <View
+          style={{
+            width: 255,
+            marginTop: 20,
+            borderColor: "#000",
+            borderTopWidth: 2,
+          }}
+        >
+          <Text style={{ marginTop: 8 }}>Crop Name {priceCrop}</Text>
+          <Text style={{ marginTop: 8 }}>Minimum Price: {}</Text>
+          <Text style={{ marginTop: 8 }}>Maximum Price: {} &deg;C</Text>
+        </View>
+        <TouchableOpacity
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#207502",
+            marginTop: 20,
+            borderRadius: 16,
+            height: 46,
+            width: 204,
+          }}
+          onPress={() => {
+            handlFetchCropPrice("Telangana", "Karimnagar", "Cotton");
+          }}
+        >
+          <Text style={{ fontSize: 24, fontWeight: "bold", color: "#fff" }}>
+            Crop Price
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -131,8 +180,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    // justifyContent: "center",
-    // backgroundColor: "#a82",
   },
 });
 export default HomeScreen;
