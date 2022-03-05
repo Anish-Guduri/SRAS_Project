@@ -3,6 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
+  Image,
   ScrollView,
   TextInput,
   StatusBar,
@@ -15,6 +16,11 @@ import * as Location from "expo-location";
 import moment from "moment-timezone";
 import { authentication } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+// import { Ionicons } from "@expo/vector-icons";
+// import { Entypo } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Avatar } from "react-native-paper";
+
 function HomeScreen({ navigation }) {
   const [email, setEmail] = React.useState("");
   const [name, setName] = React.useState("");
@@ -32,7 +38,6 @@ function HomeScreen({ navigation }) {
       if (user) {
         setEmail(user.email);
         setName(user.displayName);
-        // ...
       } else {
         navigation.navigate("Login");
       }
@@ -49,24 +54,6 @@ function HomeScreen({ navigation }) {
       setLocation(location);
       fetchWeatherApiData(location.coords.latitude, location.coords.longitude);
     })();
-
-    const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to exit?", [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel",
-        },
-        { text: "YES", onPress: () => BackHandler.exitApp() },
-      ]);
-      return true;
-    };
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
   }, []);
 
   function handlLogOut() {
@@ -117,110 +104,106 @@ function HomeScreen({ navigation }) {
         // console.log(data.current.sunrise);
       });
   };
-  let priceCrop = "  ";
-  const handlFetchCropPrice = (state, district, commodity) => {
-    console.log("Crop Price");
-    const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=579b464db66ec23bdd000001df20ab572c9b421b5111effe484d013c&format=json&limit=500&filters[state]=${state}&filters[district]=${district}&filters[commodity]=${commodity}`;
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        Alert.alert(data.records[0].market);
-        // console.log(JSON.stringify(data));
-        priceCrop = data.records[0].market;
-        // setTemp(JSON.stringify(data.current.temp));
-        // console.log(data.current.sunrise);
-      });
-  };
+  // let priceCrop = "  ";
+  // const handlFetchCropPrice = (state, district, commodity) => {
+  //   console.log("Crop Price");
+  //   const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=579b464db66ec23bdd000001df20ab572c9b421b5111effe484d013c&format=json&limit=500&filters[state]=${state}&filters[district]=${district}&filters[commodity]=${commodity}`;
+  //   fetch(url)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       Alert.alert(data.records[0].market);
+  //       // console.log(JSON.stringify(data));
+  //       priceCrop = data.records[0].market;
+  //       // setTemp(JSON.stringify(data.current.temp));
+  //       // console.log(data.current.sunrise);
+  //     });
+  // };
 
   return (
     <View style={styles.container}>
-      {/* <TouchableOpacity onPress={() => navigation.replace("Welcome")}>
-        <Text>Screen {email} </Text>
-        <Text>Screen {name} </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#207502",
-          marginTop: 20,
-          borderRadius: 16,
-          height: 46,
-          width: 204,
-        }}
-        onPress={() => {
-          handlLogOut();
-        }}
-      >
-        <Text style={{ fontSize: 24, fontWeight: "bold", color: "#fff" }}>
-          Logout
-        </Text>
-      </TouchableOpacity> */}
-
       <StatusBar animated={true} backgroundColor="#207502" />
-      <View style={styles.profileView}>
-        <Text style={styles.profileViewText}>Latitude: {text}</Text>
-        <Text style={styles.profileViewText}>Longitude: {longitude}</Text>
-        <Text style={styles.profileViewText}>Temperature: {temp} &deg;C</Text>
+      <View elevation={5} style={styles.profileView}>
+        <TouchableOpacity
+          style={{ marginTop: 8, marginLeft: 12, padding: 4 }}
+          onPress={() => navigation.openDrawer()}
+        >
+          <View
+            style={{
+              width: 26,
+              height: 3,
+              borderRadius: 24,
+              marginBottom: 3,
+              backgroundColor: "#fff",
+            }}
+          ></View>
+          <View
+            style={{
+              width: 26,
+              height: 3,
+              borderRadius: 24,
+              marginBottom: 3,
+              backgroundColor: "#fff",
+            }}
+          ></View>
+          <View
+            style={{
+              width: 26,
+              height: 3,
+              borderRadius: 24,
+              marginBottom: 3,
+              backgroundColor: "#fff",
+            }}
+          ></View>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
+          {/* <MaterialCommunityIcons name="account" size={32} color="#fff" /> */}
+          <Avatar.Text size={36} label="A" color="white" />
+        </TouchableOpacity>
       </View>
       <View elevation={5} style={styles.WeatherInfoCard}>
-        <View style={styles.WeatherInfoCardpartHorizontal}>
-          <View style={styles.WeatherInfoCardpartVerical1}>
-            <ImageBackground
-              source={require("../assets/vecteezy_sun-smiling-weather-icon-on-white-background_.jpg")}
-              resizeMode="cover"
-              style={{ width: "100%", height: "100%" }}
-            >
-              <Text style={styles.WeatherHeading}>Temp:</Text>
-              <Text style={styles.WeatherTextValue}>{temp} &deg;C</Text>
-            </ImageBackground>
+        <ImageBackground
+          source={require("../assets/WeatherBackground.png")}
+          style={{ width: "100%", height: "100%" }}
+          imageStyle={{ borderRadius: 40 }}
+        >
+          <View style={styles.weatherItem}>
+            <Image
+              source={require("../assets/temperatureIcon.png")}
+              style={styles.weatherIcon}
+            />
+            <Text style={styles.WeatherTextValue}>{temp} &deg;C</Text>
           </View>
 
-          <View style={styles.WeatherInfoCardpartVerical2}>
-            <ImageBackground
-              source={require("../assets/vecteezy_sunny-day-and-clouds-cartoon-illustration-sun-and-cloud_5835172.png")}
-              resizeMode="cover"
-              style={{ width: "100%", height: "100%" }}
-            >
-              <Text style={styles.WeatherHeading}>Rain:</Text>
-              <Text style={styles.WeatherTextValue}>{rain}</Text>
-            </ImageBackground>
+          <View style={styles.weatherItem}>
+            {/* <Text style={styles.WeatherHeading}>Rain:</Text> */}
+            <Image
+              source={require("../assets/WeatherIcon.png")}
+              style={styles.weatherIcon}
+            />
+            <Text style={styles.WeatherTextValue}>{rain}</Text>
           </View>
-        </View>
 
-        <View style={styles.WeatherInfoCardpartHorizontal}>
-          <View style={styles.WeatherInfoCardpartVerical3}>
-            <Text style={styles.WeatherHeading}>Humidity </Text>
+          <View style={styles.weatherItem}>
+            <Image
+              source={require("../assets/humidityIcon.png")}
+              style={styles.weatherIcon}
+            />
+            {/* <Text style={styles.WeatherHeading}>Humidity </Text> */}
             <Text style={styles.WeatherTextValue}>{humidity}</Text>
           </View>
 
-          <View style={styles.WeatherInfoCardpartVerical4}>
-            <Text style={styles.WeatherHeading}>Wind Speed</Text>
-            <Text
-              style={{
-                paddingTop: 8,
-                paddingRight: 16,
-                fontSize: 20,
-                textAlign: "right",
-                color: "#000",
-              }}
-            >
-              {windSpeed} km/hr
-            </Text>
-            <Text
-              style={{
-                paddingTop: 8,
-                paddingRight: 16,
-                fontSize: 16,
-                textAlign: "right",
-                color: "#000",
-              }}
-            >
+          <View style={styles.weatherItem}>
+            <Image
+              source={require("../assets/windIcon.png")}
+              style={styles.weatherIcon}
+            />
+            {/* <Text style={styles.WeatherHeading}>Wind Speed</Text> */}
+            <Text style={styles.WeatherTextValue}>{windSpeed} km/hr</Text>
+            <Text style={[styles.WeatherTextValue, { marginLeft: 28 }]}>
               {windDirection}
             </Text>
           </View>
-        </View>
+        </ImageBackground>
       </View>
 
       {/* <View
@@ -253,17 +236,32 @@ function HomeScreen({ navigation }) {
             Crop Price
           </Text>
         </TouchableOpacity> */}
+
+      <TouchableOpacity
+        elevation={2}
+        style={{
+          height: "8%",
+          width: "80%",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: "88%",
+          backgroundColor: "#207502",
+          borderRadius: 16,
+        }}
+        onPress={() => navigation.navigate("SoilAnalysisScreen")}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
+          Check your Soil Analysis
+        </Text>
+      </TouchableOpacity>
       <View
         elevation={5}
         style={{
-          flex: 1,
-          justifyContent: "flex-end",
-          position: "absolute",
-          top: "92%",
-          height: "8.5%",
+          height: "8%",
           width: "100%",
           backgroundColor: "#207502",
-          justifyContent: "flex-end",
+          borderTopRightRadius: 4,
+          borderTopLeftRadius: 4,
         }}
       ></View>
     </View>
@@ -273,13 +271,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    justifyContent: "space-between",
   },
   profileView: {
-    // flexDirection: "row",
-    paddingTop: 16,
-    paddingLeft: 16,
+    flexDirection: "row",
     width: "100%",
     height: "24%",
+    paddingTop: 16,
+    paddingLeft: 16,
+    justifyContent: "space-between",
     backgroundColor: "#207502",
     borderBottomLeftRadius: 48,
     borderBottomRightRadius: 48,
@@ -298,67 +298,20 @@ const styles = StyleSheet.create({
     top: 108,
     backgroundColor: "#fff",
     borderRadius: 40,
-    padding: 8,
+    // padding: 8,
   },
-  WeatherInfoCardpartHorizontal: {
-    flex: 2,
+  weatherIcon: {
+    height: 34,
+    width: 34,
+    marginLeft: 24,
+    marginTop: 16,
+    marginRight: 48,
+  },
+  weatherItem: {
+    flex: 4,
     flexDirection: "row",
-    // marginLeft: 20,
-    // paddingRight: 20,
-    // borderBottomWidth: 2,
-    // borderRightWidth: 2,
-    // borderBottomColor: "#fff",
-    // borderRightColor: "#fff",
   },
-  WeatherInfoCardpartVerical1: {
-    flex: 2,
-    // borderBottomWidth: 2,
-    // borderBottomColor: "#fff",
-    borderTopLeftRadius: 40,
-    // backgroundColor: "#149",
-    borderRightWidth: 1,
-    borderRightColor: "#000",
-    borderBottomWidth: 1,
-    borderBottomColor: "#000",
-  },
-  WeatherInfoCardpartVerical2: {
-    flex: 2,
-    borderTopRightRadius: 40,
-    // backgroundColor: "#3ee",
-    borderLeftWidth: 1,
-    borderLeftColor: "#000",
-    borderBottomWidth: 1,
-    borderBottomColor: "#000",
-    // borderBottomWidth: 2,
-    // borderBottomColor: "#fff",
-  },
-  WeatherInfoCardpartVerical3: {
-    flex: 2,
-    // backgroundColor: "#4a3",
-    borderBottomLeftRadius: 40,
-    borderRightWidth: 1,
-    borderRightColor: "#000",
-    borderTopWidth: 1,
-    borderTopColor: "#000",
-    // borderRightWidth: 2,
-    // borderRightColor: "#fff",
-    // marginBottom: 20,
-  },
-  WeatherInfoCardpartVerical4: {
-    flex: 2,
-    // backgroundColor: "#91F",
-    borderBottomRightRadius: 40,
-    borderLeftWidth: 1,
-    borderLeftColor: "#000",
-    borderTopWidth: 1,
-    borderTopColor: "#000",
-  },
-  WeatherHeading: {
-    color: "#000",
-    marginTop: 8,
-    paddingLeft: 12,
-    fontSize: 20,
-  },
+
   WeatherTextValue: {
     paddingTop: 8,
     paddingRight: 16,
