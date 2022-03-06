@@ -8,9 +8,11 @@ import {
   StatusBar,
   Alert,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 import { authentication } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 function LoginScreen({ navigation }) {
   React.useEffect(() => {
@@ -95,7 +97,7 @@ function LoginScreen({ navigation }) {
           <Text style={styles.btnText}>LogIn</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ flexDirection: "row", fontSize: 16 }}
+          style={{ flexDirection: "row", fontSize: 16, marginBottom: 10 }}
           onPress={() => navigation.navigate("Register")}
         >
           <Text style={{ justifyContent: "center" }}>

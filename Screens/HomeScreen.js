@@ -16,8 +16,6 @@ import * as Location from "expo-location";
 import moment from "moment-timezone";
 import { authentication } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-// import { Ionicons } from "@expo/vector-icons";
-// import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Avatar } from "react-native-paper";
 
@@ -38,6 +36,7 @@ function HomeScreen({ navigation }) {
       if (user) {
         setEmail(user.email);
         setName(user.displayName);
+        // console.log(name);
       } else {
         navigation.navigate("Login");
       }
@@ -72,7 +71,7 @@ function HomeScreen({ navigation }) {
   }
   let apiKey = "a766553fb96265daea1f178f66eed316";
   const fetchWeatherApiData = (latitude, longitude) => {
-    console.log(latitude + " " + longitude);
+    // console.log(latitude + " " + longitude);
     fetch(
       `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${apiKey}`
     )
@@ -81,7 +80,7 @@ function HomeScreen({ navigation }) {
         // console.log(JSON.stringify(data));
         let windDegree = JSON.stringify(data.current.wind_deg);
         setTemp(JSON.stringify(data.current.temp));
-        setRain(JSON.stringify(data.current.weather[0].main));
+        setRain(JSON.stringify(data.current.weather[0].description));
         setHumidity(JSON.stringify(data.current.humidity));
         setWindSpeed(JSON.stringify(data.current.wind_speed));
 
@@ -104,20 +103,6 @@ function HomeScreen({ navigation }) {
         // console.log(data.current.sunrise);
       });
   };
-  // let priceCrop = "  ";
-  // const handlFetchCropPrice = (state, district, commodity) => {
-  //   console.log("Crop Price");
-  //   const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=579b464db66ec23bdd000001df20ab572c9b421b5111effe484d013c&format=json&limit=500&filters[state]=${state}&filters[district]=${district}&filters[commodity]=${commodity}`;
-  //   fetch(url)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       Alert.alert(data.records[0].market);
-  //       // console.log(JSON.stringify(data));
-  //       priceCrop = data.records[0].market;
-  //       // setTemp(JSON.stringify(data.current.temp));
-  //       // console.log(data.current.sunrise);
-  //     });
-  // };
 
   return (
     <View style={styles.container}>
@@ -157,14 +142,19 @@ function HomeScreen({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
           {/* <MaterialCommunityIcons name="account" size={32} color="#fff" /> */}
-          <Avatar.Text size={36} label="A" color="white" />
+          <Avatar.Text
+            size={42}
+            label="A"
+            color="#000"
+            style={{ backgroundColor: "#777" }}
+          />
         </TouchableOpacity>
       </View>
       <View elevation={5} style={styles.WeatherInfoCard}>
         <ImageBackground
           source={require("../assets/WeatherBackground.png")}
           style={{ width: "100%", height: "100%" }}
-          imageStyle={{ borderRadius: 40 }}
+          imageStyle={{ borderRadius: 40, opacity: 0.5 }}
         >
           <View style={styles.weatherItem}>
             <Image

@@ -14,6 +14,7 @@ import EditProfile from "./Screens/EditProfile";
 import BookYourSlot from "./Screens/BookYourSlot";
 import SoilAnalysis from "./Screens/SoilAnalysis";
 import CropPrice from "./Screens/CropPrice";
+import CropPriceDetails from "./Screens/CropPriceDetails";
 import "react-native-gesture-handler";
 import DrawerContent from "./Screens/DrawerContent";
 
@@ -105,6 +106,13 @@ export default function App() {
         <Stack.Screen
           name="CropPriceScreen"
           component={CropPrice}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CropPriceDetailsScreen"
+          component={CropPriceDetails}
           options={{
             headerShown: false,
           }}
