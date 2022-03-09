@@ -81,17 +81,12 @@ function CropPrice({ navigation }) {
   };
 
   return (
-    // <KeyboardAwareScrollView
-    //   extraScrollHeight={100}
-    //   enableOnAndroid={true}
-    //   extraHeight={80}
-    // >
     <View style={styles.container}>
       <StatusBar animated={true} backgroundColor="#207502" />
       <View elevation={5} style={styles.profileView}>
         <TouchableOpacity
           style={{ marginTop: 8, marginLeft: 12, padding: 4 }}
-          // onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+          onPress={() => navigation.openDrawer()}
         >
           <View
             style={{
@@ -122,12 +117,10 @@ function CropPrice({ navigation }) {
           ></View>
         </TouchableOpacity>
         <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
-          {/* <MaterialCommunityIcons name="account" size={32} color="#fff" /> */}
           <Avatar.Text size={36} label="A" color="white" />
         </TouchableOpacity>
       </View>
 
-      {/* <ScrollView> */}
       <Text
         style={{
           textAlign: "center",
@@ -144,17 +137,8 @@ function CropPrice({ navigation }) {
         onItemSelect={(item) => {
           setState(item.name);
         }}
-        // style={{
-        //   width: "60%",
-        //   height: 24,
-        //   borderColor: "#000",
-        //   borderWidth: 2,
-        // }}
-        //onItemSelect called after the selection from the dropdown
         containerStyle={{ padding: 5, marginBottom: 40 }}
-        // //suggestion container style
         textInputStyle={{
-          //inserted text style
           padding: 12,
           borderWidth: 1,
           width: 270,
@@ -163,7 +147,6 @@ function CropPrice({ navigation }) {
           backgroundColor: "#FAF7F6",
         }}
         itemStyle={{
-          //single dropdown item style
           padding: 10,
           marginTop: 2,
           backgroundColor: "#FAF9F8",
@@ -252,48 +235,6 @@ function CropPrice({ navigation }) {
         underlineColorAndroid="transparent"
         //To remove the underline from the android input
       />
-      <SearchableDropdown
-        onTextChange={(text) => console.log(text)}
-        //On text change listner on the searchable input
-        onItemSelect={(item) => alert(JSON.stringify(item))}
-        //onItemSelect called after the selection from the dropdown
-        containerStyle={{ padding: 5 }}
-        //suggestion container style
-        textInputStyle={{
-          //inserted text style
-          padding: 12,
-          borderWidth: 1,
-          borderColor: "#ccc",
-          backgroundColor: "#FAF7F6",
-        }}
-        itemStyle={{
-          //single dropdown item style
-          padding: 10,
-          marginTop: 2,
-          backgroundColor: "#FAF9F8",
-          borderColor: "#bbb",
-          borderWidth: 1,
-        }}
-        itemTextStyle={{
-          //text style of a single dropdown item
-          color: "#222",
-        }}
-        itemsContainerStyle={{
-          //items container style you can pass maxHeight
-          //to restrict the items dropdown hieght
-          maxHeight: "50%",
-        }}
-        items={items}
-        //mapping of item array
-        defaultIndex={2}
-        //default selected item index
-        placeholder="placeholder"
-        //place holder for the search input
-        resetValue={false}
-        //reset textInput Value with true and false state
-        underlineColorAndroid="transparent"
-        //To remove the underline from the android input
-      />
 
       <TouchableOpacity
         style={{
@@ -305,8 +246,6 @@ function CropPrice({ navigation }) {
           backgroundColor: "#207502",
           borderRadius: 16,
         }}
-        // disabled={true}
-
         onPress={() => {
           setState("");
           navigation.navigate("CropPriceDetailsScreen", {
@@ -325,7 +264,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    // justifyContent: "space-between",
   },
   profileView: {
     flexDirection: "row",

@@ -14,9 +14,7 @@ function EditProfile({ navigation }) {
           alignItems: "flex-start",
           justifyContent: "flex-start",
         }}
-        onPress={() => {
-          navigation.dispatch(DrawerActions.openDrawer());
-        }}
+        onPress={() => navigation.openDrawer()}
       >
         <View
           style={{

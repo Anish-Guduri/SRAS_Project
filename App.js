@@ -34,6 +34,34 @@ function DrawerRoutes() {
           headerShown: false,
         }}
       />
+      <Drawer.Screen
+        name="EditProfileScreen"
+        component={EditProfile}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="BookYourSlotScreen"
+        component={BookYourSlot}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="SoilAnalysisScreen"
+        component={SoilAnalysis}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="CropPriceScreen"
+        component={CropPrice}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Drawer.Navigator>
   );
 }

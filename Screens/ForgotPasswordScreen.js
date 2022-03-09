@@ -21,6 +21,7 @@ function ForgotPasswordScreen({ navigation }) {
     if (emailRegex.test(email)) {
       sendPasswordResetEmail(authentication, email)
         .then(() => {
+          Alert.alert("Reset your password  link shared  email ");
           navigation.navigate("Login");
         })
         .catch((error) => {
