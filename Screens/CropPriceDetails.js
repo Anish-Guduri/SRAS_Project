@@ -11,6 +11,8 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
+import { Avatar } from "react-native-paper";
+import { borderRightColor } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 function CropPriceDetails({ route, navigation }) {
   const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -37,31 +39,192 @@ function CropPriceDetails({ route, navigation }) {
       .finally(() => setLoading(false));
   };
   return (
-    <View>
-      <Text>CropPriceDetails</Text>
-      <Text>itemId: {state}</Text>
-      <Text>itemId: {district}</Text>
-
-      {loading && (
-        <ActivityIndicator style={{ height: 80 }} color="#C00" size="large" />
-      )}
-      <FlatList
-        data={data.records}
-        renderItem={({ item }) => (
-          <View style={{ marginLeft: 36, marginTop: 24 }}>
-            <Text>
-              {item.market +
-                ". " +
-                item.commodity +
-                ". " +
-                item.min_price +
-                ". " +
-                item.max_price}
-            </Text>
-          </View>
+    <View style={styles.container}>
+      <StatusBar animated={true} backgroundColor="#207502" />
+      <View elevation={5} style={styles.profileView}>
+        <TouchableOpacity
+          style={{ marginTop: 8, marginLeft: 12, padding: 4 }}
+          onPress={() => navigation.openDrawer()}
+        >
+          <View
+            style={{
+              width: 26,
+              height: 3,
+              borderRadius: 24,
+              marginBottom: 3,
+              backgroundColor: "#fff",
+            }}
+          ></View>
+          <View
+            style={{
+              width: 26,
+              height: 3,
+              borderRadius: 24,
+              marginBottom: 3,
+              backgroundColor: "#fff",
+            }}
+          ></View>
+          <View
+            style={{
+              width: 26,
+              height: 3,
+              borderRadius: 24,
+              marginBottom: 3,
+              backgroundColor: "#fff",
+            }}
+          ></View>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
+          {/* <MaterialCommunityIcons name="account" size={32} color="#fff" /> */}
+          <Avatar.Text
+            size={42}
+            label="A"
+            color="#000"
+            style={{ backgroundColor: "#777" }}
+          />
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          borderWidth: 1,
+          borderColor: "#207502",
+          marginTop: 24,
+          marginBottom: 12,
+          margin: 16,
+        }}
+      >
+        <View style={styles.table}>
+          <Text
+            style={[
+              styles.tableHeaderText,
+              { borderRightColor: "#fff", borderRightWidth: 1 },
+            ]}
+          >
+            Market
+          </Text>
+          <Text
+            style={[
+              styles.tableHeaderText,
+              { borderRightColor: "#fff", borderRightWidth: 1 },
+            ]}
+          >
+            {" "}
+            Commodity{" "}
+          </Text>
+          <Text
+            style={[
+              styles.tableHeaderText,
+              { borderRightColor: "#fff", borderRightWidth: 1 },
+            ]}
+          >
+            {" "}
+            Mimimum Price{" "}
+          </Text>
+          <Text style={styles.tableHeaderText}> Maximum price </Text>
+        </View>
+        {loading && (
+          <ActivityIndicator
+            style={{ height: 120 }}
+            color="#207502"
+            size="large"
+          />
         )}
-      />
+        <FlatList
+          data={data.records}
+          renderItem={({ item }) => (
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  borderBottomWidth: 1,
+                  borderColor: "#207502",
+                }}
+              >
+                <Text
+                  style={[
+                    styles.tableDataColoumn,
+                    { borderRightWidth: 1, borderRightColor: "#207502" },
+                  ]}
+                >
+                  {item.market}
+                </Text>
+                <Text
+                  style={[
+                    styles.tableDataColoumn,
+                    { borderRightWidth: 1, borderRightColor: "#207502" },
+                  ]}
+                >
+                  {item.commodity}
+                </Text>
+                <Text
+                  style={[
+                    styles.tableDataColoumn,
+                    { borderRightWidth: 1, borderRightColor: "#207502" },
+                  ]}
+                >
+                  {item.min_price}
+                </Text>
+                <Text style={[styles.tableDataColoumn]}>{item.max_price}</Text>
+              </View>
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    // justifyContent: "space-between",
+  },
+  profileView: {
+    flexDirection: "row",
+    width: "100%",
+    height: "12%",
+    paddingTop: 16,
+    paddingLeft: 16,
+    justifyContent: "space-between",
+    backgroundColor: "#207502",
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  profileViewText: {
+    color: "#fff",
+    marginTop: 8,
+    paddingLeft: 20,
+  },
+  table: {
+    flexDirection: "row",
+    // marginTop: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#207502",
+    height: "6%",
+  },
+  tableHeaderText: {
+    width: "25%",
+    height: "100%",
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+    padding: 4,
+    alignItems: "center",
+    justifyContent: "center",
+
+    // borderRightColor: "#fff",
+    // borderRightWidth: 1,
+  },
+  tableDataColoumn: {
+    width: "25%",
+    height: "100%",
+    padding: 2,
+    borderRightWidth: 1,
+    borderRightColor: "#207502",
+    alignItems: "center",
+  },
+});
 export default CropPriceDetails;

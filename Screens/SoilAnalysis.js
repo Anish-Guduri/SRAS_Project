@@ -6,10 +6,12 @@ import {
   KeyboardAvoidingView,
   TextInput,
   FlatList,
+  Modal,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Alert,
 } from "react-native";
-import ConditionalRenderList from "../componenets/ConditionalRenderList";
+import ConditionalRenderList from "../components/ConditionalRenderList";
 import { ScrollView } from "react-native-gesture-handler";
 // import { Alert } from "react-native-web";
 
@@ -810,83 +812,89 @@ function SoilAnalysis({ navigation }) {
   const [toggle, setToggle] = React.useState(false);
   const conditionalRenderList = () => {};
   return (
-    // <ScrollView>
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior="height"
-      // enabled={true}
+    <TouchableWithoutFeedback
+      onPress={() => {
+        if (toggle) setToggle(false);
+      }}
     >
-      <TouchableOpacity
-        style={{
-          marginTop: 16,
-          marginLeft: 20,
-          marginBottom: 20,
-          padding: 16,
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
-        }}
-        onPress={() => navigation.openDrawer()}
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="height"
+        onPress={() => setToggle(!toggle)}
+        // enabled={true}
       >
-        <View
+        <TouchableOpacity
           style={{
-            width: 26,
-            height: 3,
-            borderRadius: 24,
-            marginBottom: 3,
-            backgroundColor: "#000",
+            marginTop: 16,
+            marginLeft: 20,
+            marginBottom: 20,
+            padding: 16,
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
           }}
-        ></View>
-        <View
-          style={{
-            width: 26,
-            height: 3,
-            borderRadius: 24,
-            marginBottom: 3,
-            backgroundColor: "#000",
-          }}
-        ></View>
-        <View
-          style={{
-            width: 26,
-            height: 3,
-            borderRadius: 24,
-            marginBottom: 3,
-            backgroundColor: "#000",
-          }}
-        ></View>
-      </TouchableOpacity>
-      <Text style={{ textAlign: "center" }}>Soil Analysis Screen</Text>
-      <View style={styles.searchbleBox}>
-        <View style={styles.textInputBox}>
-          <TextInput
-            style={styles.searchbleBoxText}
-            placeholder="Select State"
-            value={state}
-            onFocus={() => {
-              setToggle(true);
-              setState("");
+          onPress={() => navigation.openDrawer()}
+        >
+          <View
+            style={{
+              width: 26,
+              height: 3,
+              borderRadius: 24,
+              marginBottom: 3,
+              backgroundColor: "#000",
             }}
-            onChangeText={(text) => setState(text)}
-          ></TextInput>
-        </View>
-        {toggle && (
-          <View style={styles.dropDownContainer}>
-            <ConditionalRenderList
-              states={states}
-              state={state}
-              setIndexOfState={setIndexOfState}
-              setState={setState}
-              toggle={toggle}
-              setToggle={setToggle}
-            ></ConditionalRenderList>
+          ></View>
+          <View
+            style={{
+              width: 26,
+              height: 3,
+              borderRadius: 24,
+              marginBottom: 3,
+              backgroundColor: "#000",
+            }}
+          ></View>
+          <View
+            style={{
+              width: 26,
+              height: 3,
+              borderRadius: 24,
+              marginBottom: 3,
+              backgroundColor: "#000",
+            }}
+          ></View>
+        </TouchableOpacity>
+        <Text style={{ textAlign: "center" }}>Soil Analysis Screen</Text>
+        <View style={styles.searchbleBox}>
+          <View style={styles.textInputBox}>
+            <TextInput
+              style={styles.searchbleBoxText}
+              placeholder="Select State"
+              value={state}
+              onFocus={() => {
+                setToggle(true);
+                setState("");
+              }}
+              onChangeText={(text) => setState(text)}
+            ></TextInput>
           </View>
-        )}
-        <Text style={{ margin: 20, height: 30, width: "80%" }}>
-          {state + " " + toggle}
-        </Text>
-        {/* <Text style={{ margin: 20, height: 30, width: 80 }}>{state}</Text> */}
-      </View>
-    </KeyboardAvoidingView>
+          {toggle && (
+            <View style={styles.dropDownContainer}>
+              <ConditionalRenderList
+                states={states}
+                state={state}
+                setIndexOfState={setIndexOfState}
+                setState={setState}
+                toggle={toggle}
+                setToggle={setToggle}
+              ></ConditionalRenderList>
+            </View>
+          )}
+          <Text style={{ margin: 20, height: 30, width: "80%" }}>
+            {state + " " + toggle}
+          </Text>
+          {/* <Text style={{ margin: 20, height: 30, width: 80 }}>{state}</Text> */}
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -914,7 +922,7 @@ const styles = StyleSheet.create({
   dropDownContainer: {
     flex: 1,
     // alignItems: "center",
-    maxHeight: "40%",
+    maxHeight: "30%",
     width: "68%",
     paddingTop: 1,
     paddingRight: 2,
@@ -925,7 +933,7 @@ const styles = StyleSheet.create({
   dropDownItems: {
     padding: 4,
     fontSize: 15,
-    height: 38,
+    // height: 38,
   },
 });
 export default SoilAnalysis;

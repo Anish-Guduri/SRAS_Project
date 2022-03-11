@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   dropDownItems: {
     padding: 4,
     fontSize: 15,
-    height: 24,
+    // height: 24,
   },
 });
 export default ConditionalRenderList;

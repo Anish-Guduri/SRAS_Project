@@ -8,84 +8,836 @@ import {
   Alert,
   ScrollView,
   FlatList,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  TextInput,
   ActivityIndicator,
 } from "react-native";
+
+import ConditionalRenderList from "../components/ConditionalRenderList";
+// import ConditionalDistrictList from "../components/ConditionalDistrictList";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { DrawerActions } from "@react-navigation/native";
 import { Avatar } from "react-native-paper";
 import SearchableDropdown from "react-native-searchable-dropdown";
+import DistrictList from "../components/DistrictList";
 
-// import { ScrollView } from "react-native-gesture-handler";
-const items = [
+const states = [
   //name key is must.It is to show the text in front
-  { id: 1, name: "Maharashtra" },
-  { id: 2, name: "Gujarat" },
-  { id: 3, name: "Tamilnadu" },
-  { id: 4, name: "Madhya Pradesh" },
-  { id: 5, name: "Punjab" },
-  { id: 6, name: "Telangana" },
-  { id: 7, name: "Andhra Pradesh" },
-  { id: 8, name: "Rajasthan" },
-  { id: 9, name: "Uttar Pradesh" },
-  { id: 10, name: "Uttar Pradesh" },
+  { id: 1, name: "Andhra Pradesh" },
+  { id: 2, name: "Arunachal Pradesh" },
+  { id: 3, name: "Assam" },
+  { id: 4, name: "Bihar" },
+  { id: 5, name: "Chhattisgarh" },
+  { id: 6, name: "Goa" },
+  { id: 7, name: "Gujarat" },
+  { id: 8, name: "Haryana" },
+  { id: 9, name: "Himachal Pradesh" },
+  { id: 10, name: "Jammu and Kashmir" },
+  { id: 11, name: "Jharkhand" },
+  { id: 12, name: "Karnataka" },
+  { id: 13, name: "Kerala" },
+  { id: 14, name: "Madhya Pradesh" },
+  { id: 15, name: "Maharashtra" },
+  { id: 16, name: "Manipur" },
+  { id: 17, name: "Meghalaya" },
+  { id: 18, name: "Mizoram" },
+  { id: 19, name: "Nagaland" },
+  { id: 20, name: "Odisha" },
+  { id: 21, name: "Punjab" },
+  { id: 22, name: "Rajasthan" },
+  { id: 23, name: "Sikkim" },
+  { id: 24, name: "Tamil Nadu" },
+  { id: 25, name: "Telangana" },
+  { id: 26, name: "Tripura" },
+  { id: 27, name: "Uttar Pradesh" },
+  { id: 28, name: "Uttarakhand" },
+  { id: 29, name: "West Bengal" },
 ];
-const districts = [
-  //name key is must.It is to show the text in front
-  { id: 1, name: "Satara" },
-  { id: 2, name: "Karimnagar" },
-  { id: 3, name: "Aurangabad" },
-  { id: 4, name: "Thane" },
-  { id: 5, name: "Ratnagiri" },
-  { id: 6, name: "Ahmednagar" },
+let districts = [
+  [],
+  [
+    "Anantapur",
+    "Chittoor",
+    "East Godavari",
+    "Guntur",
+    "Krishna",
+    "Kurnool",
+    "Nellore",
+    "Prakasam",
+    "Srikakulam",
+    "Visakhapatnam",
+    "Vizianagaram",
+    "West Godavari",
+    "YSR Kadapa",
+  ],
+  [
+    "Tawang",
+    "West Kameng",
+    "East Kameng",
+    "Papum Pare",
+    "Kurung Kumey",
+    "Kra Daadi",
+    "Lower Subansiri",
+    "Upper Subansiri",
+    "West Siang",
+    "East Siang",
+    "Siang",
+    "Upper Siang",
+    "Lower Siang",
+    "Lower Dibang Valley",
+    "Dibang Valley",
+    "Anjaw",
+    "Lohit",
+    "Namsai",
+    "Changlang",
+    "Tirap",
+    "Longding",
+  ],
+  [
+    "Baksa",
+    "Barpeta",
+    "Biswanath",
+    "Bongaigaon",
+    "Cachar",
+    "Charaideo",
+    "Chirang",
+    "Darrang",
+    "Dhemaji",
+    "Dhubri",
+    "Dibrugarh",
+    "Goalpara",
+    "Golaghat",
+    "Hailakandi",
+    "Hojai",
+    "Jorhat",
+    "Kamrup Metropolitan",
+    "Kamrup",
+    "Karbi Anglong",
+    "Karimganj",
+    "Kokrajhar",
+    "Lakhimpur",
+    "Majuli",
+    "Morigaon",
+    "Nagaon",
+    "Nalbari",
+    "Dima Hasao",
+    "Sivasagar",
+    "Sonitpur",
+    "South Salmara-Mankachar",
+    "Tinsukia",
+    "Udalguri",
+    "West Karbi Anglong",
+  ],
+  [
+    "Araria",
+    "Arwal",
+    "Aurangabad",
+    "Banka",
+    "Begusarai",
+    "Bhagalpur",
+    "Bhojpur",
+    "Buxar",
+    "Darbhanga",
+    "East Champaran (Motihari)",
+    "Gaya",
+    "Gopalganj",
+    "Jamui",
+    "Jehanabad",
+    "Kaimur (Bhabua)",
+    "Katihar",
+    "Khagaria",
+    "Kishanganj",
+    "Lakhisarai",
+    "Madhepura",
+    "Madhubani",
+    "Munger (Monghyr)",
+    "Muzaffarpur",
+    "Nalanda",
+    "Nawada",
+    "Patna",
+    "Purnia (Purnea)",
+    "Rohtas",
+    "Saharsa",
+    "Samastipur",
+    "Saran",
+    "Sheikhpura",
+    "Sheohar",
+    "Sitamarhi",
+    "Siwan",
+    "Supaul",
+    "Vaishali",
+    "West Champaran",
+  ],
+  [
+    "Balod",
+    "Baloda Bazar",
+    "Balrampur",
+    "Bastar",
+    "Bemetara",
+    "Bijapur",
+    "Bilaspur",
+    "Dantewada (South Bastar)",
+    "Dhamtari",
+    "Durg",
+    "Gariyaband",
+    "Janjgir-Champa",
+    "Jashpur",
+    "Kabirdham (Kawardha)",
+    "Kanker (North Bastar)",
+    "Kondagaon",
+    "Korba",
+    "Korea (Koriya)",
+    "Mahasamund",
+    "Mungeli",
+    "Narayanpur",
+    "Raigarh",
+    "Raipur",
+    "Rajnandgaon",
+    "Sukma",
+    "Surajpur  ",
+    "Surguja",
+  ],
+  [
+    "Central Delhi",
+    "East Delhi",
+    "New Delhi",
+    "North Delhi",
+    "North East  Delhi",
+    "North West  Delhi",
+    "Shahdara",
+    "South Delhi",
+    "South East Delhi",
+    "South West  Delhi",
+    "West Delhi",
+  ],
+  [
+    "Ahmedabad",
+    "Amreli",
+    "Anand",
+    "Aravalli",
+    "Banaskantha (Palanpur)",
+    "Bharuch",
+    "Bhavnagar",
+    "Botad",
+    "Chhota Udepur",
+    "Dahod",
+    "Dangs (Ahwa)",
+    "Devbhoomi Dwarka",
+    "Gandhinagar",
+    "Gir Somnath",
+    "Jamnagar",
+    "Junagadh",
+    "Kachchh",
+    "Kheda (Nadiad)",
+    "Mahisagar",
+    "Mehsana",
+    "Morbi",
+    "Narmada (Rajpipla)",
+    "Navsari",
+    "Panchmahal (Godhra)",
+    "Patan",
+    "Porbandar",
+    "Rajkot",
+    "Sabarkantha (Himmatnagar)",
+    "Surat",
+    "Surendranagar",
+    "Tapi (Vyara)",
+    "Vadodara",
+    "Valsad",
+  ],
+  [
+    "Ambala",
+    "Bhiwani",
+    "Charkhi Dadri",
+    "Faridabad",
+    "Fatehabad",
+    "Gurgaon",
+    "Hisar",
+    "Jhajjar",
+    "Jind",
+    "Kaithal",
+    "Karnal",
+    "Kurukshetra",
+    "Mahendragarh",
+    "Mewat",
+    "Palwal",
+    "Panchkula",
+    "Panipat",
+    "Rewari",
+    "Rohtak",
+    "Sirsa",
+    "Sonipat",
+    "Yamunanagar",
+  ],
+  [
+    "Bilaspur",
+    "Chamba",
+    "Hamirpur",
+    "Kangra",
+    "Kinnaur",
+    "Kullu",
+    "Lahaul &amp; Spiti",
+    "Mandi",
+    "Shimla",
+    "Sirmaur (Sirmour)",
+    "Solan",
+    "Una",
+  ],
+  [
+    "Anantnag",
+    "Bandipore",
+    "Baramulla",
+    "Budgam",
+    "Doda",
+    "Ganderbal",
+    "Jammu",
+    "Kargil",
+    "Kathua",
+    "Kishtwar",
+    "Kulgam",
+    "Kupwara",
+    "Leh",
+    "Poonch",
+    "Pulwama",
+    "Rajouri",
+    "Ramban",
+    "Reasi",
+    "Samba",
+    "Shopian",
+    "Srinagar",
+    "Udhampur",
+  ],
+  [
+    "Bokaro",
+    "Chatra",
+    "Deoghar",
+    "Dhanbad",
+    "Dumka",
+    "East Singhbhum",
+    "Garhwa",
+    "Giridih",
+    "Godda",
+    "Gumla",
+    "Hazaribag",
+    "Jamtara",
+    "Khunti",
+    "Koderma",
+    "Latehar",
+    "Lohardaga",
+    "Pakur",
+    "Palamu",
+    "Ramgarh",
+    "Ranchi",
+    "Sahibganj",
+    "Seraikela-Kharsawan",
+    "Simdega",
+    "West Singhbhum",
+  ],
+  [
+    "Bagalkot",
+    "Ballari (Bellary)",
+    "Belagavi (Belgaum)",
+    "Bengaluru (Bangalore) Rural",
+    "Bengaluru (Bangalore) Urban",
+    "Bidar",
+    "Chamarajanagar",
+    "Chikballapur",
+    "Chikkamagaluru (Chikmagalur)",
+    "Chitradurga",
+    "Dakshina Kannada",
+    "Davangere",
+    "Dharwad",
+    "Gadag",
+    "Hassan",
+    "Haveri",
+    "Kalaburagi (Gulbarga)",
+    "Kodagu",
+    "Kolar",
+    "Koppal",
+    "Mandya",
+    "Mysuru (Mysore)",
+    "Raichur",
+    "Ramanagara",
+    "Shivamogga (Shimoga)",
+    "Tumakuru (Tumkur)",
+    "Udupi",
+    "Uttara Kannada (Karwar)",
+    "Vijayapura (Bijapur)",
+    "Yadgir",
+  ],
+  [
+    "Alappuzha",
+    "Ernakulam",
+    "Idukki",
+    "Kannur",
+    "Kasaragod",
+    "Kollam",
+    "Kottayam",
+    "Kozhikode",
+    "Malappuram",
+    "Palakkad",
+    "Pathanamthitta",
+    "Thiruvananthapuram",
+    "Thrissur",
+    "Wayanad",
+  ],
+  [
+    "Agar Malwa",
+    "Alirajpur",
+    "Anuppur",
+    "Ashoknagar",
+    "Balaghat",
+    "Barwani",
+    "Betul",
+    "Bhind",
+    "Bhopal",
+    "Burhanpur",
+    "Chhatarpur",
+    "Chhindwara",
+    "Damoh",
+    "Datia",
+    "Dewas",
+    "Dhar",
+    "Dindori",
+    "Guna",
+    "Gwalior",
+    "Harda",
+    "Hoshangabad",
+    "Indore",
+    "Jabalpur",
+    "Jhabua",
+    "Katni",
+    "Khandwa",
+    "Khargone",
+    "Mandla",
+    "Mandsaur",
+    "Morena",
+    "Narsinghpur",
+    "Neemuch",
+    "Panna",
+    "Raisen",
+    "Rajgarh",
+    "Ratlam",
+    "Rewa",
+    "Sagar",
+    "Satna",
+    "Sehore",
+    "Seoni",
+    "Shahdol",
+    "Shajapur",
+    "Sheopur",
+    "Shivpuri",
+    "Sidhi",
+    "Singrauli",
+    "Tikamgarh",
+    "Ujjain",
+    "Umaria",
+    "Vidisha",
+  ],
+  [
+    "Ahmednagar",
+    "Akola",
+    "Amravati",
+    "Aurangabad",
+    "Beed",
+    "Bhandara",
+    "Buldhana",
+    "Chandrapur",
+    "Dhule",
+    "Gadchiroli",
+    "Gondia",
+    "Hingoli",
+    "Jalgaon",
+    "Jalna",
+    "Kolhapur",
+    "Latur",
+    "Mumbai City",
+    "Mumbai Suburban",
+    "Nagpur",
+    "Nanded",
+    "Nandurbar",
+    "Nashik",
+    "Osmanabad",
+    "Palghar",
+    "Parbhani",
+    "Pune",
+    "Raigad",
+    "Ratnagiri",
+    "Sangli",
+    "Satara",
+    "Sindhudurg",
+    "Solapur",
+    "Thane",
+    "Wardha",
+    "Washim",
+    "Yavatmal",
+  ],
+  [
+    "Bishnupur",
+    "Chandel",
+    "Churachandpur",
+    "Imphal East",
+    "Imphal West",
+    "Jiribam",
+    "Kakching",
+    "Kamjong",
+    "Kangpokpi",
+    "Noney",
+    "Pherzawl",
+    "Senapati",
+    "Tamenglong",
+    "Tengnoupal",
+    "Thoubal",
+    "Ukhrul",
+  ],
+  [
+    "East Garo Hills",
+    "East Jaintia Hills",
+    "East Khasi Hills",
+    "North Garo Hills",
+    "Ri Bhoi",
+    "South Garo Hills",
+    "South West Garo Hills ",
+    "South West Khasi Hills",
+    "West Garo Hills",
+    "West Jaintia Hills",
+    "West Khasi Hills",
+  ],
+  [
+    "Aizawl",
+    "Champhai",
+    "Kolasib",
+    "Lawngtlai",
+    "Lunglei",
+    "Mamit",
+    "Saiha",
+    "Serchhip",
+  ],
+  [
+    "Dimapur",
+    "Kiphire",
+    "Kohima",
+    "Longleng",
+    "Mokokchung",
+    "Mon",
+    "Peren",
+    "Phek",
+    "Tuensang",
+    "Wokha",
+    "Zunheboto",
+  ],
+  [
+    "Angul",
+    "Balangir",
+    "Balasore",
+    "Bargarh",
+    "Bhadrak",
+    "Boudh",
+    "Cuttack",
+    "Deogarh",
+    "Dhenkanal",
+    "Gajapati",
+    "Ganjam",
+    "Jagatsinghapur",
+    "Jajpur",
+    "Jharsuguda",
+    "Kalahandi",
+    "Kandhamal",
+    "Kendrapara",
+    "Kendujhar (Keonjhar)",
+    "Khordha",
+    "Koraput",
+    "Malkangiri",
+    "Mayurbhanj",
+    "Nabarangpur",
+    "Nayagarh",
+    "Nuapada",
+    "Puri",
+    "Rayagada",
+    "Sambalpur",
+    "Sonepur",
+    "Sundargarh",
+  ],
+  [
+    "Amritsar",
+    "Barnala",
+    "Bathinda",
+    "Faridkot",
+    "Fatehgarh Sahib",
+    "Fazilka",
+    "Ferozepur",
+    "Gurdaspur",
+    "Hoshiarpur",
+    "Jalandhar",
+    "Kapurthala",
+    "Ludhiana",
+    "Mansa",
+    "Moga",
+    "Muktsar",
+    "Nawanshahr (Shahid Bhagat Singh Nagar)",
+    "Pathankot",
+    "Patiala",
+    "Rupnagar",
+    "Sahibzada Ajit Singh Nagar (Mohali)",
+    "Sangrur",
+    "Tarn Taran",
+  ],
+  [
+    "Ajmer",
+    "Alwar",
+    "Banswara",
+    "Baran",
+    "Barmer",
+    "Bharatpur",
+    "Bhilwara",
+    "Bikaner",
+    "Bundi",
+    "Chittorgarh",
+    "Churu",
+    "Dausa",
+    "Dholpur",
+    "Dungarpur",
+    "Hanumangarh",
+    "Jaipur",
+    "Jaisalmer",
+    "Jalore",
+    "Jhalawar",
+    "Jhunjhunu",
+    "Jodhpur",
+    "Karauli",
+    "Kota",
+    "Nagaur",
+    "Pali",
+    "Pratapgarh",
+    "Rajsamand",
+    "Sawai Madhopur",
+    "Sikar",
+    "Sirohi",
+    "Sri Ganganagar",
+    "Tonk",
+    "Udaipur",
+  ],
+  ["East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim"],
+  [
+    "Ariyalur",
+    "Chennai",
+    "Coimbatore",
+    "Cuddalore",
+    "Dharmapuri",
+    "Dindigul",
+    "Erode",
+    "Kanchipuram",
+    "Kanyakumari",
+    "Karur",
+    "Krishnagiri",
+    "Madurai",
+    "Nagapattinam",
+    "Namakkal",
+    "Nilgiris",
+    "Perambalur",
+    "Pudukkottai",
+    "Ramanathapuram",
+    "Salem",
+    "Sivaganga",
+    "Thanjavur",
+    "Theni",
+    "Thoothukudi (Tuticorin)",
+    "Tiruchirappalli",
+    "Tirunelveli",
+    "Tiruppur",
+    "Tiruvallur",
+    "Tiruvannamalai",
+    "Tiruvarur",
+    "Vellore",
+    "Viluppuram",
+    "Virudhunagar",
+  ],
+  [
+    "Adilabad",
+    "Bhadradri Kothagudem",
+    "Hyderabad",
+    "Jagtial",
+    "Jangaon",
+    "Jayashankar Bhoopalpally",
+    "Jogulamba Gadwal",
+    "Kamareddy",
+    "Karimnagar",
+    "Khammam",
+    "Komaram Bheem Asifabad",
+    "Mahabubabad",
+    "Mahabubnagar",
+    "Mancherial",
+    "Medak",
+    "Medchal",
+    "Nagarkurnool",
+    "Nalgonda",
+    "Nirmal",
+    "Nizamabad",
+    "Peddapalli",
+    "Rajanna Sircilla",
+    "Rangareddy",
+    "Sangareddy",
+    "Siddipet",
+    "Suryapet",
+    "Vikarabad",
+    "Wanaparthy",
+    "Warangal (Rural)",
+    "Warangal (Urban)",
+    "Yadadri Bhuvanagiri",
+  ],
+  [
+    "Dhalai",
+    "Gomati",
+    "Khowai",
+    "North Tripura",
+    "Sepahijala",
+    "South Tripura",
+    "Unakoti",
+    "West Tripura",
+  ],
+  [
+    "Almora",
+    "Bageshwar",
+    "Chamoli",
+    "Champawat",
+    "Dehradun",
+    "Haridwar",
+    "Nainital",
+    "Pauri Garhwal",
+    "Pithoragarh",
+    "Rudraprayag",
+    "Tehri Garhwal",
+    "Udham Singh Nagar",
+    "Uttarkashi",
+  ],
+  [
+    "Agra",
+    "Aligarh",
+    "Allahabad",
+    "Ambedkar Nagar",
+    "Amethi (Chatrapati Sahuji Mahraj Nagar)",
+    "Amroha (J.P. Nagar)",
+    "Auraiya",
+    "Azamgarh",
+    "Baghpat",
+    "Bahraich",
+    "Ballia",
+    "Balrampur",
+    "Banda",
+    "Barabanki",
+    "Bareilly",
+    "Basti",
+    "Bhadohi",
+    "Bijnor",
+    "Budaun",
+    "Bulandshahr",
+    "Chandauli",
+    "Chitrakoot",
+    "Deoria",
+    "Etah",
+    "Etawah",
+    "Faizabad",
+    "Farrukhabad",
+    "Fatehpur",
+    "Firozabad",
+    "Gautam Buddha Nagar",
+    "Ghaziabad",
+    "Ghazipur",
+    "Gonda",
+    "Gorakhpur",
+    "Hamirpur",
+    "Hapur (Panchsheel Nagar)",
+    "Hardoi",
+    "Hathras",
+    "Jalaun",
+    "Jaunpur",
+    "Jhansi",
+    "Kannauj",
+    "Kanpur Dehat",
+    "Kanpur Nagar",
+    "Kanshiram Nagar (Kasganj)",
+    "Kaushambi",
+    "Kushinagar (Padrauna)",
+    "Lakhimpur - Kheri",
+    "Lalitpur",
+    "Lucknow",
+    "Maharajganj",
+    "Mahoba",
+    "Mainpuri",
+    "Mathura",
+    "Mau",
+    "Meerut",
+    "Mirzapur",
+    "Moradabad",
+    "Muzaffarnagar",
+    "Pilibhit",
+    "Pratapgarh",
+    "RaeBareli",
+    "Rampur",
+    "Saharanpur",
+    "Sambhal (Bhim Nagar)",
+    "Sant Kabir Nagar",
+    "Shahjahanpur",
+    "Shamali (Prabuddh Nagar)",
+    "Shravasti",
+    "Siddharth Nagar",
+    "Sitapur",
+    "Sonbhadra",
+    "Sultanpur",
+    "Unnao",
+    "Varanasi",
+  ],
+  [
+    "Alipurduar",
+    "Bankura",
+    "Birbhum",
+    "Burdwan (Bardhaman)",
+    "Cooch Behar",
+    "Dakshin Dinajpur (South Dinajpur)",
+    "Darjeeling",
+    "Hooghly",
+    "Howrah",
+    "Jalpaiguri",
+    "Kalimpong",
+    "Kolkata",
+    "Malda",
+    "Murshidabad",
+    "Nadia",
+    "North 24 Parganas",
+    "Paschim Medinipur (West Medinipur)",
+    "Purba Medinipur (East Medinipur)",
+    "Purulia",
+    "South 24 Parganas",
+    "Uttar Dinajpur (North Dinajpur)",
+  ],
 ];
 
 function CropPrice({ navigation }) {
   const [state, setState] = React.useState("");
-  const [selectedItems, setSelectedItems] = React.useState();
   const [district, setDistrict] = React.useState("");
-  const [data, setData] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
-  //   async UpdateNews() {
-  //     this.props.setProgress(10);
-  //     const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
-  //     // this.props.setProgress(30);
-  //     this.setState({ loading: true })
-  //     let data = await fetch(url);
-  //     this.props.setProgress(60);
-  //     let parsedData = await data.json();
-  //     console.log(parsedData.json);
-  //     this.setState({
-  //         articles: parsedData.articles,
-  //         totalResults: parsedData.totalResults,
-  //         loading: false
-  //     })
-  //     this.props.setProgress(100);
-  // }
-
-  const handlFetchCropPrice = (state, district) => {
-    setData([]);
-    setLoading(true);
-    // console.log("Crop Price" + state + district);
-    const url = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=579b464db66ec23bdd000001df20ab572c9b421b5111effe484d013c&format=json&limit=500&filters[state]=${state}&filters[district]=${district}`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => {
-        setData(json);
-        // console.log(data);
-      })
-      .catch((error) => {
-        Alert.alert(error.message);
-      })
-      .finally(() => setLoading(false));
-  };
+  const [indexOfState, setIndexOfState] = React.useState(0);
+  const [toggle, setToggle] = React.useState(false);
+  const [distToggle, setDistToggle] = React.useState(false);
 
   return (
-    <View style={styles.container}>
-      <StatusBar animated={true} backgroundColor="#207502" />
-      <View elevation={5} style={styles.profileView}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        setToggle(false);
+        setDistToggle(false);
+      }}
+    >
+      <View style={styles.container} behavior="height">
         <TouchableOpacity
-          style={{ marginTop: 8, marginLeft: 12, padding: 4 }}
+          style={{
+            marginTop: 16,
+            marginLeft: 20,
+            marginBottom: 20,
+            padding: 16,
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+          }}
           onPress={() => navigation.openDrawer()}
         >
           <View
@@ -94,7 +846,7 @@ function CropPrice({ navigation }) {
               height: 3,
               borderRadius: 24,
               marginBottom: 3,
-              backgroundColor: "#fff",
+              backgroundColor: "#000",
             }}
           ></View>
           <View
@@ -103,7 +855,7 @@ function CropPrice({ navigation }) {
               height: 3,
               borderRadius: 24,
               marginBottom: 3,
-              backgroundColor: "#fff",
+              backgroundColor: "#000",
             }}
           ></View>
           <View
@@ -112,169 +864,141 @@ function CropPrice({ navigation }) {
               height: 3,
               borderRadius: 24,
               marginBottom: 3,
-              backgroundColor: "#fff",
+              backgroundColor: "#000",
             }}
           ></View>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
-          <Avatar.Text size={36} label="A" color="white" />
-        </TouchableOpacity>
+        <Text style={{ textAlign: "center" }}>Soil Analysis Screen</Text>
+        <View style={styles.searchbleBox}>
+          <View style={styles.textInputBox}>
+            <TextInput
+              style={styles.searchbleBoxText}
+              placeholder="Select State"
+              value={state}
+              onFocus={() => {
+                setToggle(true);
+                setDistToggle(false);
+                setState("");
+                setIndexOfState(0);
+              }}
+              onChangeText={(text) => {
+                setState(text);
+              }}
+            ></TextInput>
+          </View>
+          {toggle && (
+            <View style={styles.dropDownContainer}>
+              <ConditionalRenderList
+                states={states}
+                state={state}
+                setIndexOfState={setIndexOfState}
+                setState={setState}
+                toggle={toggle}
+                setToggle={setToggle}
+              ></ConditionalRenderList>
+            </View>
+          )}
+          {/* <Text style={{ margin: 20, height: 30, width: "80%" }}>
+            {state + " " + toggle}
+          </Text> */}
+          {/* <Text style={{ margin: 20, height: 30, width: 80 }}>{state}</Text> */}
+        </View>
+        <View style={styles.searchbleBox}>
+          <View style={styles.textInputBox}>
+            <TextInput
+              style={styles.searchbleBoxText}
+              placeholder="Select District"
+              value={district}
+              onFocus={() => {
+                setToggle(false);
+                setDistToggle(true);
+                setDistrict("");
+              }}
+              onChangeText={(text) => {
+                setDistrict(text);
+              }}
+            ></TextInput>
+          </View>
+          {distToggle &&
+            (state ? (
+              <View style={styles.dropDownContainer}>
+                <DistrictList
+                  indexOfState={indexOfState}
+                  districts={districts}
+                  district={district}
+                  setDistrict={setDistrict}
+                  toggle={distToggle}
+                  setToggle={setDistToggle}
+                />
+              </View>
+            ) : (
+              Alert.alert("Please select state first")
+            ))}
+        </View>
+        <View
+          style={{ alignItems: "center", marginTop: "4%", marginBottom: "36%" }}
+        >
+          <TouchableOpacity
+            elevation={2}
+            style={{
+              height: 44,
+              width: "60%",
+              alignItems: "center",
+              justifyContent: "center",
+
+              backgroundColor: "#207502",
+              borderRadius: 16,
+            }}
+            onPress={() =>
+              navigation.navigate("CropPriceDetailsScreen", { state, district })
+            }
+          >
+            <Text style={{ alignItems: "center", color: "#fff" }}>
+              Get Crop Price
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <Text
-        style={{
-          textAlign: "center",
-          color: "#86340A",
-          marginTop: 24,
-          marginBottom: 24,
-        }}
-      >
-        Select State and District to view price of different crops
-      </Text>
-      <SearchableDropdown
-        onTextChange={(text) => console.log(text)}
-        // selectedItems={selectedItems}
-        onItemSelect={(item) => {
-          setState(item.name);
-        }}
-        containerStyle={{ padding: 5, marginBottom: 40 }}
-        textInputStyle={{
-          padding: 12,
-          borderWidth: 1,
-          width: 270,
-          borderColor: "#ccc",
-          borderRadius: 8,
-          backgroundColor: "#FAF7F6",
-        }}
-        itemStyle={{
-          padding: 10,
-          marginTop: 2,
-          backgroundColor: "#FAF9F8",
-          borderColor: "#bbb",
-          borderRadius: 8,
-          borderWidth: 1,
-        }}
-        itemTextStyle={{
-          //text style of a single dropdown item
-          color: "#222",
-        }}
-        itemsContainerStyle={{
-          //items container style you can pass maxHeight
-          //to restrict the items dropdown hieght
-          // height: 104,
-          // padding: 8,
-          // // borderColor: "#000",
-          // borderRadius: 8,
-          // borderWidth: 1,
-          maxHeight: "50%",
-        }}
-        items={items}
-        //mapping of item array
-        defaultIndex={0}
-        //default selected item index
-        placeholder="Select State"
-        //place holder for the search input
-        resetValue={false}
-        //reset textInput Value with true and false state
-        underlineColorAndroid="transparent"
-        //To remove the underline from the android input
-      />
-      <SearchableDropdown
-        onTextChange={(text) => console.log(text)}
-        onItemSelect={(item) => {
-          setDistrict(item.name);
-        }}
-        style={{
-          width: "60%",
-          height: 24,
-          borderColor: "#000",
-          borderWidth: 2,
-        }}
-        //onItemSelect called after the selection from the dropdown
-        containerStyle={{ padding: 5, marginBottom: 40 }}
-        // //suggestion container style
-        textInputStyle={{
-          //inserted text style
-          padding: 12,
-          borderWidth: 1,
-          width: 270,
-          borderColor: "#ccc",
-          borderRadius: 8,
-          backgroundColor: "#FAF7F6",
-        }}
-        itemStyle={{
-          //single dropdown item style
-          padding: 10,
-          marginTop: 2,
-          backgroundColor: "#FAF9F8",
-          borderColor: "#bbb",
-          borderRadius: 8,
-          borderWidth: 1,
-        }}
-        itemTextStyle={{
-          //text style of a single dropdown item
-          color: "#222",
-        }}
-        itemsContainerStyle={{
-          //items container style you can pass maxHeight
-          //to restrict the items dropdown hieght
-          // height: "20%",
-          padding: 8,
-          borderColor: "#000",
-          borderRadius: 8,
-          borderWidth: 1,
-        }}
-        items={districts}
-        //mapping of item array
-        // defaultIndex={0}
-        // //default selected item index
-        placeholder="Select District"
-        //place holder for the search input
-        resetValue={false}
-        //reset textInput Value with true and false state
-        underlineColorAndroid="transparent"
-        //To remove the underline from the android input
-      />
-
-      <TouchableOpacity
-        style={{
-          marginTop: 20,
-          height: 46,
-          width: "60%",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#207502",
-          borderRadius: 16,
-        }}
-        onPress={() => {
-          setState("");
-          navigation.navigate("CropPriceDetailsScreen", {
-            state: state,
-            district: district,
-          });
-        }}
-      >
-        <Text style={{ fontSize: 20 }}> Crop Price</Text>
-      </TouchableOpacity>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  searchbleBox: {
+    flex: 1,
     alignItems: "center",
   },
-  profileView: {
-    flexDirection: "row",
-    width: "100%",
-    height: "12%",
-    paddingTop: 16,
-    paddingLeft: 16,
-    justifyContent: "space-between",
-    backgroundColor: "#207502",
-    borderBottomLeftRadius: 18,
-    borderBottomRightRadius: 18,
+  textInputBox: {
+    height: 42,
+    width: "68%",
+    marginTop: 16,
+  },
+  searchbleBoxText: {
+    height: 40,
+    paddingLeft: 12,
+    fontSize: 18,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#86340A",
+  },
+  dropDownContainer: {
+    flex: 1,
+    // alignItems: "center",
+    maxHeight: "70%",
+    width: "68%",
+    paddingTop: 1,
+    paddingRight: 2,
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: "#86340A",
+  },
+  dropDownItems: {
+    padding: 4,
+    fontSize: 15,
+    // height: 38,
   },
 });
 export default CropPrice;
