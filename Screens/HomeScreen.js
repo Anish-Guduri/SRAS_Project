@@ -146,7 +146,7 @@ function HomeScreen({ navigation }) {
             size={42}
             label="A"
             color="#000"
-            style={{ backgroundColor: "#777" }}
+            style={{ backgroundColor: "#fff" }}
           />
         </TouchableOpacity>
       </View>

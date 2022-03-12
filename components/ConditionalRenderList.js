@@ -50,7 +50,7 @@ const ConditionalRenderList = ({
       );
     }
 
-    return <Text>state</Text>;
+    return <Text>Not Found</Text>;
   }
   return (
     <FlatList

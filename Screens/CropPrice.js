@@ -6,21 +6,13 @@ import {
   TouchableOpacity,
   StatusBar,
   Alert,
-  ScrollView,
-  FlatList,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   TextInput,
-  ActivityIndicator,
 } from "react-native";
 
 import ConditionalRenderList from "../components/ConditionalRenderList";
-// import ConditionalDistrictList from "../components/ConditionalDistrictList";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { DrawerActions } from "@react-navigation/native";
 import { Avatar } from "react-native-paper";
-import SearchableDropdown from "react-native-searchable-dropdown";
 import DistrictList from "../components/DistrictList";
 
 const states = [
@@ -820,6 +812,7 @@ function CropPrice({ navigation }) {
   const [indexOfState, setIndexOfState] = React.useState(0);
   const [toggle, setToggle] = React.useState(false);
   const [distToggle, setDistToggle] = React.useState(false);
+  const [focus, setFocus] = React.useState(false);
 
   return (
     <TouchableWithoutFeedback
@@ -828,47 +821,56 @@ function CropPrice({ navigation }) {
         setDistToggle(false);
       }}
     >
-      <View style={styles.container} behavior="height">
-        <TouchableOpacity
-          style={{
-            marginTop: 16,
-            marginLeft: 20,
-            marginBottom: 20,
-            padding: 16,
-            alignItems: "flex-start",
-            justifyContent: "flex-start",
-          }}
-          onPress={() => navigation.openDrawer()}
-        >
-          <View
-            style={{
-              width: 26,
-              height: 3,
-              borderRadius: 24,
-              marginBottom: 3,
-              backgroundColor: "#000",
-            }}
-          ></View>
-          <View
-            style={{
-              width: 26,
-              height: 3,
-              borderRadius: 24,
-              marginBottom: 3,
-              backgroundColor: "#000",
-            }}
-          ></View>
-          <View
-            style={{
-              width: 26,
-              height: 3,
-              borderRadius: 24,
-              marginBottom: 3,
-              backgroundColor: "#000",
-            }}
-          ></View>
-        </TouchableOpacity>
-        <Text style={{ textAlign: "center" }}>Soil Analysis Screen</Text>
+      <View style={styles.container}>
+        <StatusBar animated={true} backgroundColor="#207502" />
+        <View elevation={5} style={styles.profileView}>
+          <TouchableOpacity
+            style={{ marginTop: 8, marginLeft: 12, padding: 4 }}
+            onPress={() => navigation.openDrawer()}
+          >
+            <View
+              style={{
+                width: 26,
+                height: 3,
+                borderRadius: 24,
+                marginBottom: 3,
+                backgroundColor: "#fff",
+              }}
+            ></View>
+            <View
+              style={{
+                width: 26,
+                height: 3,
+                borderRadius: 24,
+                marginBottom: 3,
+                backgroundColor: "#fff",
+              }}
+            ></View>
+            <View
+              style={{
+                width: 26,
+                height: 3,
+                borderRadius: 24,
+                marginBottom: 3,
+                backgroundColor: "#fff",
+              }}
+            ></View>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
+            {/* <MaterialCommunityIcons name="account" size={32} color="#fff" /> */}
+            <Avatar.Text
+              size={42}
+              label="A"
+              color="#000"
+              style={{ backgroundColor: "#fff" }}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={{ alignItems: "center", marginTop: 12 }}>
+          <Text style={{ width: "80%", textAlign: "center" }}>
+            Check current price of crop by selecin state and district below
+          </Text>
+        </View>
         <View style={styles.searchbleBox}>
           <View style={styles.textInputBox}>
             <TextInput
@@ -878,9 +880,11 @@ function CropPrice({ navigation }) {
               onFocus={() => {
                 setToggle(true);
                 setDistToggle(false);
+                setFocus(true);
                 setState("");
                 setIndexOfState(0);
               }}
+              // onBlur={() => setFocus(false)}
               onChangeText={(text) => {
                 setState(text);
               }}
@@ -912,6 +916,7 @@ function CropPrice({ navigation }) {
               onFocus={() => {
                 setToggle(false);
                 setDistToggle(true);
+                setFocus(true);
                 setDistrict("");
               }}
               onChangeText={(text) => {
@@ -936,7 +941,11 @@ function CropPrice({ navigation }) {
             ))}
         </View>
         <View
-          style={{ alignItems: "center", marginTop: "4%", marginBottom: "36%" }}
+          style={
+            focus
+              ? { alignItems: "center", marginTop: "4%", marginBottom: 4 }
+              : { alignItems: "center", marginTop: "4%", marginBottom: "26%" }
+          }
         >
           <TouchableOpacity
             elevation={2}
@@ -967,6 +976,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  profileView: {
+    flexDirection: "row",
+    width: "100%",
+    height: 78,
+    paddingTop: 16,
+    paddingLeft: 16,
+    justifyContent: "space-between",
+    backgroundColor: "#207502",
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  profileViewText: {
+    color: "#fff",
+    marginTop: 8,
+    paddingLeft: 20,
+  },
   searchbleBox: {
     flex: 1,
     alignItems: "center",
@@ -987,7 +1012,7 @@ const styles = StyleSheet.create({
   dropDownContainer: {
     flex: 1,
     // alignItems: "center",
-    maxHeight: "70%",
+    maxHeight: "50%",
     width: "68%",
     paddingTop: 1,
     paddingRight: 2,

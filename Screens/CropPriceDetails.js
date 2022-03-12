@@ -44,7 +44,7 @@ function CropPriceDetails({ route, navigation }) {
       <View elevation={5} style={styles.profileView}>
         <TouchableOpacity
           style={{ marginTop: 8, marginLeft: 12, padding: 4 }}
-          onPress={() => navigation.openDrawer()}
+          // onPress={() => navigation.openDrawer()}
         >
           <View
             style={{
@@ -80,15 +80,15 @@ function CropPriceDetails({ route, navigation }) {
             size={42}
             label="A"
             color="#000"
-            style={{ backgroundColor: "#777" }}
+            style={{ backgroundColor: "#fff" }}
           />
         </TouchableOpacity>
       </View>
       <View
         style={{
           flex: 1,
-          borderWidth: 1,
-          borderColor: "#207502",
+          // borderWidth: 1,
+          // borderColor: "#207502",
           marginTop: 24,
           marginBottom: 12,
           margin: 16,
@@ -109,8 +109,7 @@ function CropPriceDetails({ route, navigation }) {
               { borderRightColor: "#fff", borderRightWidth: 1 },
             ]}
           >
-            {" "}
-            Commodity{" "}
+            Commodity
           </Text>
           <Text
             style={[
@@ -118,8 +117,7 @@ function CropPriceDetails({ route, navigation }) {
               { borderRightColor: "#fff", borderRightWidth: 1 },
             ]}
           >
-            {" "}
-            Mimimum Price{" "}
+            Mimimum Price
           </Text>
           <Text style={styles.tableHeaderText}> Maximum price </Text>
         </View>
@@ -144,27 +142,16 @@ function CropPriceDetails({ route, navigation }) {
                 <Text
                   style={[
                     styles.tableDataColoumn,
-                    { borderRightWidth: 1, borderRightColor: "#207502" },
+                    {
+                      borderLeftWidth: 1,
+                      borderLeftColor: "#207502",
+                    },
                   ]}
                 >
                   {item.market}
                 </Text>
-                <Text
-                  style={[
-                    styles.tableDataColoumn,
-                    { borderRightWidth: 1, borderRightColor: "#207502" },
-                  ]}
-                >
-                  {item.commodity}
-                </Text>
-                <Text
-                  style={[
-                    styles.tableDataColoumn,
-                    { borderRightWidth: 1, borderRightColor: "#207502" },
-                  ]}
-                >
-                  {item.min_price}
-                </Text>
+                <Text style={styles.tableDataColoumn}>{item.commodity}</Text>
+                <Text style={styles.tableDataColoumn}>{item.min_price}</Text>
                 <Text style={[styles.tableDataColoumn]}>{item.max_price}</Text>
               </View>
             </View>
@@ -203,7 +190,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#207502",
-    height: "6%",
+    height: "8%",
   },
   tableHeaderText: {
     width: "25%",
