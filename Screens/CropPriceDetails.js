@@ -31,7 +31,7 @@ function CropPriceDetails({ route, navigation }) {
       .then((response) => response.json())
       .then((json) => {
         setData(json);
-        // console.log(data);
+        console.log(data.records);
       })
       .catch((error) => {
         Alert.alert(error.message);
@@ -84,6 +84,9 @@ function CropPriceDetails({ route, navigation }) {
           />
         </TouchableOpacity>
       </View>
+      {/* <View style={{ marginTop: 12 }}>
+        <Text>{data.count}</Text>
+      </View> */}
       <View
         style={{
           flex: 1,
@@ -156,6 +159,7 @@ function CropPriceDetails({ route, navigation }) {
               </View>
             </View>
           )}
+          keyExtractor={(item, index) => index.toString()}
         />
       </View>
     </View>

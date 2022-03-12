@@ -67,6 +67,7 @@ const ConditionalRenderList = ({
           <Text style={styles.item}>{item.name}</Text>
         </TouchableOpacity>
       )}
+      keyExtractor={(item, index) => index.toString()}
     />
   );
 };

@@ -10,8 +10,9 @@ import {
   Alert,
 } from "react-native";
 
-import { authentication } from "../firebase";
+import { authentication, db } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 function RegisterScreen({ navigation }) {
   // const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [name, setName] = React.useState("");
@@ -32,15 +33,31 @@ function RegisterScreen({ navigation }) {
             displayName: name,
           })
             .then(() => {
-              Alert.alert("Profile Created successfully!");
+              try {
+                const docRef = setDoc(doc(db, "users", user.uid), {
+                  email: email,
+                  name: name,
+                });
+                console.log("Document written with ID: ", docRef.id);
+              } catch (e) {
+                console.error("Error adding document: ", e);
+              }
+
+              // Alert.alert("Profile Created successfully!");
               console.log(
-                user.displayName + " " + user.email + " " + user.emailVerified
+                user.displayName +
+                  " " +
+                  user.email +
+                  " " +
+                  user.uid +
+                  " " +
+                  user.emailVerified
               );
             })
             .catch((error) => {
               Alert.alert(error.message);
             });
-          Alert.alert("Account created successfully!");
+          Alert.alert("Account created successfully!" + user.uid);
           navigation.navigate("Home");
         })
         .catch((error) => {

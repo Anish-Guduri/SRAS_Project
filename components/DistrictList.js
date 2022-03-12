@@ -60,6 +60,7 @@ const DistrictList = ({
             <Text style={styles.item}>{item}</Text>
           </TouchableOpacity>
         )}
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );
