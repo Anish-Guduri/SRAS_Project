@@ -1,29 +1,41 @@
 import * as React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { authentication } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { Alert } from "react-native-web";
 function SplashScreen({ navigation }) {
   React.useEffect(() => {
-    onAuthStateChanged(authentication, (user) => {
-      if (user) {
-        navigation.replace("Home");
-        // ...
-      } else {
-        navigation.replace("Welcome");
-      }
-    });
+    setTimeout(() => {
+      Alert.alert("Hello");
+      onAuthStateChanged(authentication, (user) => {
+        if (user) {
+          navigation.replace("Home");
+          // ...
+        } else {
+          navigation.replace("Welcome");
+        }
+      });
+    }, 3000);
   });
 
   return (
-    <TouchableOpacity
-      onPress={() => navigation.navigate("Welcome")}
+    <ImageBackground
+      source={require("../assets/splashSky.jpeg")}
+      imageStyle={{ opacity: 0.7 }}
       style={styles.container}
     >
       <Image
         source={require("../assets/Logo.png")}
         style={{ height: 200, width: 200 }}
       />
-    </TouchableOpacity>
+    </ImageBackground>
   );
 }
 

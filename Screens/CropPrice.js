@@ -51,7 +51,7 @@ let districts = [
   [],
   [
     "Anantapur",
-    "Chittoor",
+    "Chittor",
     "East Godavari",
     "Guntur",
     "Krishna",

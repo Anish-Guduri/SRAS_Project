@@ -17,6 +17,7 @@ import moment from "moment-timezone";
 import { authentication } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import { Avatar } from "react-native-paper";
 
 function HomeScreen({ navigation }) {
@@ -29,14 +30,15 @@ function HomeScreen({ navigation }) {
   const [windSpeed, setWindSpeed] = React.useState("--");
   const [windDirection, setWindDirection] = React.useState("--");
   const [rain, setRain] = React.useState("--");
-  // const [data, setData] = React.useState({});
+  const [userID, setUserId] = React.useState(null);
   // const [price, setPrice] = React.useState("");
   React.useEffect(() => {
     onAuthStateChanged(authentication, (user) => {
       if (user) {
         setEmail(user.email);
         setName(user.displayName);
-        // console.log(name);
+        setUserId(user.uid);
+        Alert.alert(user.uid);
       } else {
         navigation.navigate("Login");
       }
@@ -140,8 +142,10 @@ function HomeScreen({ navigation }) {
             }}
           ></View>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
-          {/* <MaterialCommunityIcons name="account" size={32} color="#fff" /> */}
+        <TouchableOpacity
+          style={{ marginRight: 40, marginTop: 4 }}
+          onPress={() => navigation.navigate("EditProfileScreen", { userID })}
+        >
           <Avatar.Text
             size={42}
             label="A"
@@ -165,7 +169,6 @@ function HomeScreen({ navigation }) {
           </View>
 
           <View style={styles.weatherItem}>
-            {/* <Text style={styles.WeatherHeading}>Rain:</Text> */}
             <Image
               source={require("../assets/WeatherIcon.png")}
               style={styles.weatherIcon}
@@ -178,7 +181,6 @@ function HomeScreen({ navigation }) {
               source={require("../assets/humidityIcon.png")}
               style={styles.weatherIcon}
             />
-            {/* <Text style={styles.WeatherHeading}>Humidity </Text> */}
             <Text style={styles.WeatherTextValue}>{humidity}</Text>
           </View>
 
@@ -187,7 +189,6 @@ function HomeScreen({ navigation }) {
               source={require("../assets/windIcon.png")}
               style={styles.weatherIcon}
             />
-            {/* <Text style={styles.WeatherHeading}>Wind Speed</Text> */}
             <Text style={styles.WeatherTextValue}>{windSpeed} km/hr</Text>
             <Text style={[styles.WeatherTextValue, { marginLeft: 28 }]}>
               {windDirection}
@@ -195,40 +196,8 @@ function HomeScreen({ navigation }) {
           </View>
         </ImageBackground>
       </View>
-
-      {/* <View
-          style={{
-            width: 255,
-            marginTop: 20,
-            borderColor: "#000",
-            borderTopWidth: 2,
-          }}
-        >
-          <Text style={{ marginTop: 8 }}>Crop Name {priceCrop}</Text>
-          <Text style={{ marginTop: 8 }}>Minimum Price: {}</Text>
-          <Text style={{ marginTop: 8 }}>Maximum Price: {} &deg;C</Text>
-        </View> */}
-      {/* <TouchableOpacity
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#207502",
-            marginTop: 20,
-            borderRadius: 16,
-            height: 46,
-            width: 204,
-          }}
-          onPress={() => {
-            handlFetchCropPrice("Maharashtra", "Nagpur", "Beetroot");
-          }}
-        >
-          <Text style={{ fontSize: 24, fontWeight: "bold", color: "#fff" }}>
-            Crop Price
-          </Text>
-        </TouchableOpacity> */}
-
       <TouchableOpacity
-        elevation={2}
+        elevation={5}
         style={{
           height: "8%",
           width: "80%",
@@ -244,16 +213,41 @@ function HomeScreen({ navigation }) {
           Check your Soil Analysis
         </Text>
       </TouchableOpacity>
-      <View
-        elevation={5}
-        style={{
-          height: "8%",
-          width: "100%",
-          backgroundColor: "#207502",
-          borderTopRightRadius: 4,
-          borderTopLeftRadius: 4,
-        }}
-      ></View>
+      <View elevation={5} style={styles.bottomBar}>
+        <TouchableOpacity
+          elevation={10}
+          style={styles.bottomButtons}
+          onPress={() => navigation.navigate("BookYourSlotScreen")}
+        >
+          <Image
+            source={require("../assets/CropPrice.png")}
+            style={{ height: 24, width: 24 }}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          elevation={10}
+          style={styles.bottomButtons}
+          onPress={() => navigation.navigate("BookYourSlotScreen")}
+        >
+          <MaterialCommunityIcons
+            name="store-outline"
+            size={30}
+            color="white"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          elevation={10}
+          style={styles.bottomButtons}
+          onPress={() => navigation.navigate("EditProfileScreen")}
+        >
+          <MaterialCommunityIcons
+            name="account-outline"
+            size={30}
+            color="white"
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -288,7 +282,6 @@ const styles = StyleSheet.create({
     top: 108,
     backgroundColor: "#fff",
     borderRadius: 40,
-    // padding: 8,
   },
   weatherIcon: {
     height: 34,
@@ -308,6 +301,22 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: "right",
     color: "black",
+  },
+  bottomBar: {
+    flexDirection: "row",
+    height: "8%",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#207502",
+    borderTopRightRadius: 4,
+    borderTopLeftRadius: 4,
+  },
+  bottomButtons: {
+    flex: 3,
+    padding: 6,
+    alignItems: "center",
+    // justifyContent: "center",
   },
 });
 export default HomeScreen;

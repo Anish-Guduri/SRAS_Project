@@ -16,6 +16,7 @@ import { borderRightColor } from "react-native/Libraries/Components/View/ReactNa
 function CropPriceDetails({ route, navigation }) {
   const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  // const [count, setCount] = React.useState(0);
   const { state, district } = route.params;
 
   React.useEffect(() => {
@@ -31,7 +32,6 @@ function CropPriceDetails({ route, navigation }) {
       .then((response) => response.json())
       .then((json) => {
         setData(json);
-        console.log(data.records);
       })
       .catch((error) => {
         Alert.alert(error.message);
@@ -84,14 +84,9 @@ function CropPriceDetails({ route, navigation }) {
           />
         </TouchableOpacity>
       </View>
-      {/* <View style={{ marginTop: 12 }}>
-        <Text>{data.count}</Text>
-      </View> */}
       <View
         style={{
           flex: 1,
-          // borderWidth: 1,
-          // borderColor: "#207502",
           marginTop: 24,
           marginBottom: 12,
           margin: 16,

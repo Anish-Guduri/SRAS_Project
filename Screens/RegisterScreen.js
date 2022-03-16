@@ -169,7 +169,7 @@ function RegisterScreen({ navigation }) {
       <Text style={styles.errorText}>{errorConfirmPassword}</Text>
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity onPress={RegisterUser} style={styles.btn}>
-          <Text style={styles.btnText}>Get OTP</Text>
+          <Text style={styles.btnText}>Register</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
