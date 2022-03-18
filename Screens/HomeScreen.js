@@ -7,7 +7,6 @@ import {
   ScrollView,
   TextInput,
   StatusBar,
-  BackHandler,
   TouchableOpacity,
   ImageBackground,
   Alert,
@@ -38,7 +37,7 @@ function HomeScreen({ navigation }) {
         setEmail(user.email);
         setName(user.displayName);
         setUserId(user.uid);
-        Alert.alert(user.uid);
+        // Alert.alert(userID);
       } else {
         navigation.navigate("Login");
       }
@@ -239,7 +238,11 @@ function HomeScreen({ navigation }) {
         <TouchableOpacity
           elevation={10}
           style={styles.bottomButtons}
-          onPress={() => navigation.navigate("EditProfileScreen")}
+          onPress={() =>
+            navigation.navigate("EditProfileScreen", {
+              userID: userID,
+            })
+          }
         >
           <MaterialCommunityIcons
             name="account-outline"

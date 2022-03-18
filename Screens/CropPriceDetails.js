@@ -126,36 +126,52 @@ function CropPriceDetails({ route, navigation }) {
             size="large"
           />
         )}
-        <FlatList
-          data={data.records}
-          renderItem={({ item }) => (
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  borderBottomWidth: 1,
-                  borderColor: "#207502",
-                }}
-              >
-                <Text
-                  style={[
-                    styles.tableDataColoumn,
-                    {
-                      borderLeftWidth: 1,
-                      borderLeftColor: "#207502",
-                    },
-                  ]}
+        {data.count != 0 ? (
+          <FlatList
+            data={data.records}
+            renderItem={({ item }) => (
+              <View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    borderBottomWidth: 1,
+                    borderColor: "#207502",
+                  }}
                 >
-                  {item.market}
-                </Text>
-                <Text style={styles.tableDataColoumn}>{item.commodity}</Text>
-                <Text style={styles.tableDataColoumn}>{item.min_price}</Text>
-                <Text style={[styles.tableDataColoumn]}>{item.max_price}</Text>
+                  <Text
+                    style={[
+                      styles.tableDataColoumn,
+                      {
+                        borderLeftWidth: 1,
+                        borderLeftColor: "#207502",
+                      },
+                    ]}
+                  >
+                    {item.market}
+                  </Text>
+                  <Text style={styles.tableDataColoumn}>{item.commodity}</Text>
+                  <Text style={styles.tableDataColoumn}>{item.min_price}</Text>
+                  <Text style={[styles.tableDataColoumn]}>
+                    {item.max_price}
+                  </Text>
+                </View>
               </View>
-            </View>
-          )}
-          keyExtractor={(item, index) => index.toString()}
-        />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        ) : (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 16,
+              borderWidth: 1,
+              borderColor: "#207502",
+            }}
+          >
+            <Text>No Results Currently found</Text>
+          </View>
+        )}
       </View>
     </View>
   );

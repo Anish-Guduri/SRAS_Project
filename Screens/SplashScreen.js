@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
+// import AsyncStorage from "@react-native-community/async-storage";
 import { authentication } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { Alert } from "react-native-web";
