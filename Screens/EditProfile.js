@@ -18,6 +18,7 @@ import {
   getDocs,
   query,
   where,
+  collectionGroup,
   runTransaction,
 } from "firebase/firestore";
 import { Avatar } from "react-native-paper";
@@ -28,6 +29,7 @@ function EditProfile({ route, navigation }) {
   const [email, setEmail] = React.useState("");
   const [gender, setGender] = React.useState("");
   const [slotCount, setSlotCount] = React.useState(0);
+  const [data, setData] = React.useState([]);
   React.useEffect(() => {
     userDetails(userID);
     // slotsAvailable();
@@ -36,6 +38,7 @@ function EditProfile({ route, navigation }) {
       setEmail();
       setGender();
       setSlotCount();
+      // setData([]);
     };
   }, []);
 
@@ -56,55 +59,88 @@ function EditProfile({ route, navigation }) {
   //   const docSnap = await getDoc(docRef);
   //   if (docSnap.exists()) {
   //     console.log("Document data:", docSnap.data());
-  //     setSlotCount(docSnap.data().slotAvailable);
+  //     setSlotCount(docSnap.data().slotsAvailable);
   //   } else {
   //     console.log("No such document!");
   //   }
   // };
-
   const bookSlot = async () => {
-    console.log("Button clicked");
-    // const docRef = doc(db, "slotBooking", "market");
-    // try {
-    //   const count = await runTransaction(db, async (transaction) => {
-    //     const sfDoc = await transaction.get(docRef);
-    //     if (!sfDoc.exists()) {
-    //       throw "Document does not exist!";
-    //     }
+    Alert.alert("clicked");
 
-    //     const newCount = sfDoc.data().slotAvailable - 1;
-    //     if (newCount >= 0) {
-    //       transaction.update(docRef, { slotAvailable: newCount });
-    //       const docSnap = await getDoc(docRef);
-    //       setSlotCount(docSnap.data().slotAvailable - 1);
-    //       return newCount;
-    //     } else {
-    //       Alert.alert("Booking full");
-    //       return Promise.reject("Sorry! Population is too big");
-    //     }
-    //   });
-    //   console.log("Population increased to ", count);
-    // } catch (e) {
-    //   // This will be a "population is too big" error.
-    //   console.error(e);
-    // }
-    // const q = query(collection(db, "users"));
-    // const q = query(
-    //   collection(db, "slotBooking"),
-    //   where("district", "==", Thane)
-    // );
-    const crop = "wheat";
-    const slotAvailablity = crop + ".slotsAvailable";
-    console.log(slotAvailablity);
-    const q = query(
-      collection(db, "slotBooking"),
-      where(slotAvailablity, "==", 3)
+    const sfDocRef = doc(
+      db,
+      "marketAdmin",
+      "harshguduri@yahoo.com",
+      "crops",
+      "wheat"
     );
 
+    try {
+      const newSlotsAvailable = await runTransaction(
+        db,
+        async (transaction) => {
+          const sfDoc = await transaction.get(sfDocRef);
+          if (!sfDoc.exists()) {
+            throw "Document does not exist!";
+          }
+
+          const newSlots = sfDoc.data().slotsAvilable - 1;
+          if (newSlots <= 1000000) {
+            transaction.update(sfDocRef, { slotsAvilable: newSlots });
+            return newSlots;
+          } else {
+            return Promise.reject("Sorry! slotsAvilable is too big");
+          }
+        }
+      );
+
+      console.log("slotsAvilable increased to ", newSlotsAvailable);
+    } catch (e) {
+      // This will be a "slotsAvilable is too big" error.
+      console.error(e);
+    }
+  };
+  const getSlotData = async () => {
+    setData([]);
+    console.log("Button clicked");
+    // const crops = query(
+    //   collectionGroup(db, "crops"),
+    //   where("cropName", "==", "corn")
+    //   // where("slotsAvilable", ">", 0)
+    // );
+    // const querySnapshot = await getDocs(crops);
+    // querySnapshot.forEach((doc) => {
+    //   // console.log(doc.data());
+    //   setData((currentObject) => [...currentObject, doc.data()]);
+    // });
+    //
+
+    const q = query(collection(db, "marketAdmin"));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
+      getcrop(doc.id);
+    });
+    console.log(
+      "========================Below is the Data======================"
+    );
+    for (let i = 0; i < data.length; i++) {
+      console.log(data[i].cropName);
+      console.log(data[i].minimumPrice);
+      console.log(data[i].slotsAvilable);
+      console.log("---------------------");
+    }
+  };
+  const getcrop = async (email) => {
+    const subColRef = query(
+      collection(db, "marketAdmin", email, "crops"),
+      where("cropName", "==", "wheat")
+    );
+    const qSnap = await getDocs(subColRef);
+    qSnap.forEach((doc) => {
+      // console.log(doc.id, " => ", doc.data().slotsAvilable);
+      // setData(doc.data());
+      // console.log(data);
+      setData((currentObject) => [...currentObject, doc.data()]);
     });
   };
   return (
@@ -144,7 +180,6 @@ function EditProfile({ route, navigation }) {
           ></View>
         </TouchableOpacity>
         <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
-          {/* <MaterialCommunityIcons name="account" size={32} color="#fff" /> */}
           <Avatar.Text
             size={42}
             label="A"
@@ -195,6 +230,22 @@ function EditProfile({ route, navigation }) {
         >
           <Text style={{ color: "#fff", fontSize: 18, textAlign: "center" }}>
             Book Slot
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            height: 52,
+            width: "64%",
+            marginTop: 24,
+            backgroundColor: "#207502",
+            alignItem: "center",
+            justifyContent: "center",
+            borderRadius: 12,
+          }}
+          onPress={getSlotData}
+        >
+          <Text style={{ color: "#fff", fontSize: 18, textAlign: "center" }}>
+            get slot data
           </Text>
         </TouchableOpacity>
       </View>
