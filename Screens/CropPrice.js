@@ -10,11 +10,10 @@ import {
   KeyboardAvoidingView,
   TextInput,
 } from "react-native";
-
-import ConditionalRenderList from "../components/ConditionalRenderList";
 import { Avatar } from "react-native-paper";
+import ConditionalRenderList from "../components/ConditionalRenderList";
 import DistrictList from "../components/DistrictList";
-
+import Menu from "../components/Menu";
 const states = [
   //name key is must.It is to show the text in front
   { id: 1, name: "Andhra Pradesh" },
@@ -824,40 +823,8 @@ function CropPrice({ navigation }) {
       <View style={styles.container}>
         <StatusBar animated={true} backgroundColor="#207502" />
         <View elevation={5} style={styles.profileView}>
-          <TouchableOpacity
-            style={{ marginTop: 8, marginLeft: 12, padding: 4 }}
-            onPress={() => navigation.openDrawer()}
-          >
-            <View
-              style={{
-                width: 26,
-                height: 3,
-                borderRadius: 24,
-                marginBottom: 3,
-                backgroundColor: "#fff",
-              }}
-            ></View>
-            <View
-              style={{
-                width: 26,
-                height: 3,
-                borderRadius: 24,
-                marginBottom: 3,
-                backgroundColor: "#fff",
-              }}
-            ></View>
-            <View
-              style={{
-                width: 26,
-                height: 3,
-                borderRadius: 24,
-                marginBottom: 3,
-                backgroundColor: "#fff",
-              }}
-            ></View>
-          </TouchableOpacity>
+          <Menu OnPress={() => navigation.openDrawer()} />
           <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
-            {/* <MaterialCommunityIcons name="account" size={32} color="#fff" /> */}
             <Avatar.Text
               size={42}
               label="A"
@@ -902,10 +869,6 @@ function CropPrice({ navigation }) {
               ></ConditionalRenderList>
             </View>
           )}
-          {/* <Text style={{ margin: 20, height: 30, width: "80%" }}>
-            {state + " " + toggle}
-          </Text> */}
-          {/* <Text style={{ margin: 20, height: 30, width: 80 }}>{state}</Text> */}
         </View>
         <View style={styles.searchbleBox}>
           <View style={styles.textInputBox}>
@@ -958,9 +921,14 @@ function CropPrice({ navigation }) {
               backgroundColor: "#207502",
               borderRadius: 16,
             }}
-            onPress={() =>
-              navigation.navigate("CropPriceDetailsScreen", { state, district })
-            }
+            onPress={() => {
+              if (state !== "" && district !== "") {
+                navigation.navigate("CropPriceDetailsScreen", {
+                  state,
+                  district,
+                });
+              } else Alert.alert("Select state and district first");
+            }}
           >
             <Text style={{ alignItems: "center", color: "#fff" }}>
               Get Crop Price
@@ -1011,7 +979,6 @@ const styles = StyleSheet.create({
   },
   dropDownContainer: {
     flex: 1,
-    // alignItems: "center",
     maxHeight: "50%",
     width: "68%",
     paddingTop: 1,
@@ -1023,7 +990,6 @@ const styles = StyleSheet.create({
   dropDownItems: {
     padding: 4,
     fontSize: 15,
-    // height: 38,
   },
 });
 export default CropPrice;

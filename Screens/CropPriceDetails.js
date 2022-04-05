@@ -12,14 +12,29 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Avatar } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import BottomBar from "../components/BottomBar";
+import { authentication } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { borderRightColor } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 function CropPriceDetails({ route, navigation }) {
   const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  // const [count, setCount] = React.useState(0);
-  const { state, district } = route.params;
 
+  const { state, district } = route.params;
+  const [userID, setUserId] = React.useState(null);
   React.useEffect(() => {
+    onAuthStateChanged(authentication, (user) => {
+      if (user) {
+        // setEmail(user.email);
+        // setName(user.displayName);
+        setUserId(user.uid);
+        // Alert.alert(userID);
+      } else {
+        navigation.navigate("Login");
+      }
+    });
+
     handlFetchCropPrice(state, district);
     console.log(state + " " + district);
   }, []);
@@ -173,6 +188,56 @@ function CropPriceDetails({ route, navigation }) {
           </View>
         )}
       </View>
+      {/* <View elevation={5} style={styles.bottomBar}>
+        <TouchableOpacity
+          elevation={10}
+          style={styles.bottomButtons}
+          onPress={() => navigation.navigate("BookYourSlotScreen")}
+        >
+          <Image
+            source={require("../assets/CropPrice.png")}
+            style={{ height: 24, width: 24 }}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          elevation={10}
+          style={styles.bottomButtons}
+          onPress={() => navigation.navigate("BookYourSlotScreen")}
+        >
+          <MaterialCommunityIcons
+            name="store-outline"
+            size={30}
+            color="white"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          elevation={10}
+          style={styles.bottomButtons}
+          onPress={() =>
+            navigation.navigate("EditProfileScreen", {
+              userID: userID,
+            })
+          }
+        >
+          <MaterialCommunityIcons
+            name="account-outline"
+            size={30}
+            color="white"
+          />
+        </TouchableOpacity>
+      </View> */}
+      <BottomBar
+        onPersonPress={() => {
+          navigation.navigate("EditProfileScreen", { userID: userID });
+        }}
+        onPricePress={() => {
+          navigation.navigate("CropPriceScreen");
+        }}
+        onBookPress={() => {
+          navigation.navigate("BookYourSlotScreen");
+        }}
+      />
     </View>
   );
 }
@@ -227,6 +292,22 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: "#207502",
     alignItems: "center",
+  },
+  bottomBar: {
+    flexDirection: "row",
+    height: "8%",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#207502",
+    borderTopRightRadius: 4,
+    borderTopLeftRadius: 4,
+  },
+  bottomButtons: {
+    flex: 3,
+    padding: 6,
+    alignItems: "center",
+    // justifyContent: "center",
   },
 });
 export default CropPriceDetails;

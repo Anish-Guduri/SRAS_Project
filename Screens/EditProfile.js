@@ -8,7 +8,6 @@ import {
   Alert,
 } from "react-native";
 import { DrawerActions } from "@react-navigation/native";
-// import { authentication } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { authentication, db } from "../firebase";
 import {
@@ -48,8 +47,8 @@ function EditProfile({ route, navigation }) {
     if (docSnap.exists()) {
       console.log("Document data:", docSnap.data());
       setName(docSnap.data().name);
-      setGender(docSnap.data().email);
-      setEmail(docSnap.data().gender);
+      setEmail(docSnap.data().email);
+      setGender(docSnap.data().gender);
     } else {
       console.log("No such document!");
     }
@@ -85,18 +84,18 @@ function EditProfile({ route, navigation }) {
           }
 
           const newSlots = sfDoc.data().slotsAvilable - 1;
-          if (newSlots <= 1000000) {
+          if (newSlots >= 0) {
             transaction.update(sfDocRef, { slotsAvilable: newSlots });
             return newSlots;
           } else {
-            return Promise.reject("Sorry! slotsAvilable is too big");
+            Alert.alert("No Slots Available");
+            return Promise.reject("Sorry! slotsAvilable  are not available");
           }
         }
       );
 
       console.log("slotsAvilable increased to ", newSlotsAvailable);
     } catch (e) {
-      // This will be a "slotsAvilable is too big" error.
       console.error(e);
     }
   };
@@ -213,6 +212,14 @@ function EditProfile({ route, navigation }) {
           }}
         >
           {gender}
+        </Text>
+        <Text
+          style={{
+            marginBottom: 8,
+            // height: 52,
+          }}
+        >
+          {userID}
         </Text>
       </View>
       <View style={{ marginTop: 24, alignItems: "center" }}>

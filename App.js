@@ -15,6 +15,7 @@ import BookYourSlot from "./Screens/BookYourSlot";
 import SoilAnalysis from "./Screens/SoilAnalysis";
 import CropPrice from "./Screens/CropPrice";
 import CropPriceDetails from "./Screens/CropPriceDetails";
+import MarketDetails from "./Screens/MarketDetails";
 import "react-native-gesture-handler";
 import DrawerContent from "./Screens/DrawerContent";
 
@@ -141,6 +142,13 @@ export default function App() {
         <Stack.Screen
           name="CropPriceDetailsScreen"
           component={CropPriceDetails}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="MarketDetailsScreen"
+          component={MarketDetails}
           options={{
             headerShown: false,
           }}

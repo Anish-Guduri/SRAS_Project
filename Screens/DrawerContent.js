@@ -9,6 +9,19 @@ import { Entypo } from "@expo/vector-icons";
 import { Drawer } from "react-native-paper";
 
 function DrawerContent({ navigation }) {
+  const [userID, setUserId] = React.useState(null);
+  React.useEffect(() => {
+    onAuthStateChanged(authentication, (user) => {
+      if (user) {
+        // setEmail(user.email);
+        // setName(user.displayName);
+        setUserId(user.uid);
+        // Alert.alert(userID);
+      } else {
+        navigation.navigate("Login");
+      }
+    });
+  });
   const handlLogOut = () => {
     signOut(authentication).catch((error) => {
       Alert.alert(error.message);
@@ -43,7 +56,9 @@ function DrawerContent({ navigation }) {
             label={
               <Text style={{ color: "#000", fontSize: 16 }}>Edit Profile</Text>
             }
-            onPress={() => navigation.navigate("EditProfileScreen")}
+            onPress={() =>
+              navigation.navigate("EditProfileScreen", { userID: userID })
+            }
           />
           <Drawer.Item
             // style={{ backgroundColor: "#64ffda" }}
@@ -87,7 +102,6 @@ function DrawerContent({ navigation }) {
           />
         </View>
       </DrawerContentScrollView>
-      <Drawer.Section></Drawer.Section>
       <TouchableOpacity style={styles.logoutButton} onPress={handlLogOut}>
         <Text style={styles.logoutButtonText}>Log Out</Text>
         <Entypo
