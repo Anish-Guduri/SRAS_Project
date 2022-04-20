@@ -7,16 +7,32 @@ import {
   StatusBar,
   Alert,
 } from "react-native";
-function Menu({ OnPress }) {
+function Menu({ OnPress, screenName }) {
   return (
-    <TouchableOpacity
-      style={{ flex: 1, marginTop: 8, marginLeft: 12, padding: 4 }}
-      onPress={OnPress}
-    >
-      <View style={styles.bar}></View>
-      <View style={styles.bar}></View>
-      <View style={styles.bar}></View>
-    </TouchableOpacity>
+    <View style={{ flexDirection: "row" }}>
+      <TouchableOpacity
+        style={{ flex: 1, marginTop: 8, marginLeft: 12, padding: 4 }}
+        onPress={OnPress}
+      >
+        <View style={styles.bar}></View>
+        <View style={styles.bar}></View>
+        <View style={styles.bar}></View>
+      </TouchableOpacity>
+      <Text
+        style={{
+          marginTop: 4,
+          marginLeft: 46,
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 22,
+          color: "white",
+          fontWeight: "bold",
+          textAlign: "left",
+        }}
+      >
+        {screenName}
+      </Text>
+    </View>
   );
 }
 

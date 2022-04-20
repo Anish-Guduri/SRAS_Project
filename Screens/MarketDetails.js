@@ -8,6 +8,7 @@ import {
   TextInput,
   StatusBar,
   TouchableOpacity,
+  FlatList,
   ImageBackground,
   Alert,
 } from "react-native";
@@ -26,13 +27,11 @@ import {
 } from "firebase/firestore";
 import { Avatar } from "react-native-paper";
 import Menu from "../components/Menu";
-// import { authentication } from "../firebase";
-// import { onAuthStateChanged } from "firebase/auth";
 function MarketDetails({ route, navigation }) {
   const { state, district, crop } = route.params;
-  const [userID, setUserId] = React.useState(null);
-  const [slotCount, setSlotCount] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [marketData, setMarketData] = React.useState([]);
   React.useEffect(() => {
     onAuthStateChanged(authentication, (user) => {
       if (user) {
@@ -41,33 +40,49 @@ function MarketDetails({ route, navigation }) {
         navigation.navigate("Login");
       }
     });
+    async () => {
+      setData([]);
+      setLoading(true);
+      console.log("Button clicked");
+      const q = query(
+        collection(db, "marketAdmin"),
+        where("district", "==", district)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        getcrop(doc.id);
+      });
+      console.log(
+        "========================= Book Your Slot =============================="
+      );
+      for (let i = 0; i < data.length; i++) {
+        console.log(data[i].cropName);
+        console.log(data[i].minimumPrice);
+        console.log(data[i].slotsAvilable);
+        console.log("---------------------");
+      }
+      // if (data.length == 0) {
+      //   Alert.alert("No markets Found");
+      // }
+    };
+    setLoading(false);
     getSlotData();
   }, []);
+
   const getSlotData = async () => {
     setData([]);
     console.log("Button clicked");
-    // const crops = query(
-    //   collectionGroup(db, "crops"),
-    //   where("cropName", "==", "corn")
-    //   // where("slotsAvilable", ">", 0)
-    // );
-    // const querySnapshot = await getDocs(crops);
-    // querySnapshot.forEach((doc) => {
-    //   // console.log(doc.data());
-    //   setData((currentObject) => [...currentObject, doc.data()]);
-    // });
-    //
-
     const q = query(
       collection(db, "marketAdmin"),
       where("district", "==", district)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
+      setMarketData((currentObject) => [...currentObject, doc.data()]);
       getcrop(doc.id);
     });
     console.log(
-      "========================Below is the Data======================"
+      "========================= Book Your Slot =============================="
     );
     for (let i = 0; i < data.length; i++) {
       console.log(data[i].cropName);
@@ -86,11 +101,45 @@ function MarketDetails({ route, navigation }) {
     );
     const qSnap = await getDocs(subColRef);
     qSnap.forEach((doc) => {
-      // console.log(doc.id, " => ", doc.data().slotsAvilable);
-      // setData(doc.data());
-      // console.log(data);
       setData((currentObject) => [...currentObject, doc.data()]);
     });
+  };
+  const bookSlot = async () => {
+    Alert.alert("clicked");
+
+    const sfDocRef = doc(
+      db,
+      "marketAdmin",
+      "harshguduri@yahoo.com",
+      "crops",
+      crop
+    );
+
+    try {
+      const newSlotsAvailable = await runTransaction(
+        db,
+        async (transaction) => {
+          const sfDoc = await transaction.get(sfDocRef);
+          if (!sfDoc.exists()) {
+            throw "Document does not exist!";
+          }
+
+          const newSlots = sfDoc.data().slotsAvilable - 1;
+          if (newSlots >= 0) {
+            transaction.update(sfDocRef, { slotsAvilable: newSlots });
+            Alert.alert("Slot Booked SuccessFully!");
+            return newSlots;
+          } else {
+            Alert.alert("No Slots Available");
+            return Promise.reject("Sorry! slotsAvilable  are not available");
+          }
+        }
+      );
+
+      // console.log("slotsAvilable increased to ", newSlotsAvailable);
+    } catch (e) {
+      console.error(e);
+    }
   };
   return (
     <View style={styles.container}>
@@ -111,6 +160,138 @@ function MarketDetails({ route, navigation }) {
         <Text>{state}</Text>
         <Text>{district}</Text>
         <Text>{crop}</Text>
+      </View>
+
+      <View
+        style={{
+          flex: 1,
+          marginTop: 24,
+          marginBottom: 12,
+          margin: 16,
+        }}
+      >
+        {/* <View style={styles.table}>
+          <Text
+            style={[
+              styles.tableHeaderText,
+              { borderRightColor: "#fff", borderRightWidth: 1 },
+            ]}
+          >
+            Market
+          </Text>
+          <Text
+            style={[
+              styles.tableHeaderText,
+              { borderRightColor: "#fff", borderRightWidth: 1 },
+            ]}
+          >
+            Commodity
+          </Text>
+          <Text
+            style={[
+              styles.tableHeaderText,
+              { borderRightColor: "#fff", borderRightWidth: 1 },
+            ]}
+          >
+            Mimimum Price
+          </Text>
+          <Text style={styles.tableHeaderText}>Slots Available</Text>
+        </View> */}
+        {loading && (
+          <ActivityIndicator
+            style={{ height: 120 }}
+            color="#207502"
+            size="large"
+          />
+        )}
+        {data.length != 0 ? (
+          <FlatList
+            data={data}
+            renderItem={({ item }) => (
+              <View>
+                {/* <View
+                  style={{
+                    flexDirection: "row",
+                    borderBottomWidth: 1,
+                    borderColor: "#207502",
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.tableDataColoumn,
+                      {
+                        borderLeftWidth: 1,
+                        borderLeftColor: "#207502",
+                      },
+                    ]}
+                  >
+                    {item.marketName}
+                  </Text>
+                  <Text style={styles.tableDataColoumn}>{item.cropName}</Text>
+                  <Text style={styles.tableDataColoumn}>
+                    {item.minimumPrice}
+                  </Text>
+                  <Text style={styles.tableDataColoumn}>
+                    {item.slotsAvilable}
+                  </Text>
+                </View> */}
+                <View style={styles.dataContainer}>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.dataLabel}>Market:</Text>
+                    <Text style={styles.actualData}>{item.marketName}</Text>
+                    {/* <Text>{marketData.marketName}</Text> */}
+                    <Text style={styles.dataLabel}>Crop:</Text>
+                    <Text style={styles.actualData}>{item.cropName}</Text>
+                  </View>
+                  <View style={{ flexDirection: "row", marginTop: 6 }}>
+                    <Text style={styles.dataLabel}>Minimum Price:</Text>
+                    <Text style={styles.actualData}>{item.minimumPrice}</Text>
+                    {/* <Text>{marketData.marketName}</Text> */}
+                    <Text style={styles.dataLabel}>slots Available:</Text>
+                    <Text style={styles.actualData}>{item.slotsAvilable}</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      height: 36,
+                      width: "40%",
+                      marginLeft: "56%",
+                      marginTop: 8,
+                      backgroundColor: "#207502",
+                      alignItem: "center",
+                      justifyContent: "center",
+                      borderRadius: 8,
+                    }}
+                    onPress={bookSlot}
+                  >
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 14,
+                        textAlign: "center",
+                      }}
+                    >
+                      Book Slot
+                    </Text>
+                  </TouchableOpacity>
+                  {/* <TouchableOpacity></TouchableOpacity> */}
+                </View>
+              </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        ) : (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 16,
+              borderWidth: 1,
+              borderColor: "#207502",
+            }}
+          >
+            <Text>No Results Currently found</Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -135,39 +316,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingLeft: 20,
   },
-  searchbleBox: {
-    flex: 1,
-    height: "100%",
-    alignItems: "center",
-  },
-  textInputBox: {
-    height: 42,
-    width: "68%",
-    marginTop: "10%",
-  },
-  searchbleBoxText: {
-    height: 40,
-    paddingLeft: 12,
-    fontSize: 18,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#86340A",
-  },
-  dropDownContainer: {
-    flex: 1,
-    maxHeight: "50%",
-    width: "68%",
-    paddingTop: 1,
-    paddingRight: 2,
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: "#86340A",
-  },
-  dropDownItems: {
-    padding: 4,
-    fontSize: 18,
-    // height: 38,
-  },
   bottomBar: {
     flexDirection: "row",
     height: "8%",
@@ -183,6 +331,50 @@ const styles = StyleSheet.create({
     padding: 6,
     alignItems: "center",
     // justifyContent: "center",
+  },
+  table: {
+    flexDirection: "row",
+    // marginTop: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#207502",
+    height: "8%",
+  },
+  tableHeaderText: {
+    width: "25%",
+    height: "100%",
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+    padding: 4,
+    alignItems: "center",
+    justifyContent: "center",
+
+    // borderRightColor: "#fff",
+    // borderRightWidth: 1,
+  },
+  tableDataColoumn: {
+    width: "25%",
+    height: "100%",
+    padding: 2,
+    borderRightWidth: 1,
+    borderRightColor: "#207502",
+    alignItems: "center",
+  },
+  dataContainer: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#86340A",
+    borderRadius: 16,
+    marginBottom: 8,
+  },
+  dataLabel: {
+    marginRight: 6,
+    color: "#207502",
+    fontWeight: "bold",
+  },
+  actualData: {
+    marginRight: 24,
   },
 });
 export default MarketDetails;

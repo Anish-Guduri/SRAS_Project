@@ -13,6 +13,9 @@ import {
 import { Avatar } from "react-native-paper";
 import ConditionalRenderList from "../components/ConditionalRenderList";
 import DistrictList from "../components/DistrictList";
+import { authentication } from "../firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import BottomBar from "../components/BottomBar";
 import Menu from "../components/Menu";
 const states = [
   //name key is must.It is to show the text in front
@@ -812,6 +815,16 @@ function CropPrice({ navigation }) {
   const [toggle, setToggle] = React.useState(false);
   const [distToggle, setDistToggle] = React.useState(false);
   const [focus, setFocus] = React.useState(false);
+  const [userID, setUserId] = React.useState(null);
+  React.useEffect(() => {
+    onAuthStateChanged(authentication, (user) => {
+      if (user) {
+        setUserId(user.uid);
+      } else {
+        navigation.navigate("Login");
+      }
+    });
+  }, []);
 
   return (
     <TouchableWithoutFeedback
@@ -823,7 +836,10 @@ function CropPrice({ navigation }) {
       <View style={styles.container}>
         <StatusBar animated={true} backgroundColor="#207502" />
         <View elevation={5} style={styles.profileView}>
-          <Menu OnPress={() => navigation.openDrawer()} />
+          <Menu
+            OnPress={() => navigation.openDrawer()}
+            screenName="Crop Price"
+          />
           <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
             <Avatar.Text
               size={42}
@@ -935,6 +951,18 @@ function CropPrice({ navigation }) {
             </Text>
           </TouchableOpacity>
         </View>
+        <BottomBar
+          style={{ marginBottom: 6 }}
+          onPersonPress={() => {
+            navigation.navigate("EditProfileScreen", { userID: userID });
+          }}
+          onPricePress={() => {
+            navigation.navigate("CropPriceScreen");
+          }}
+          onBookPress={() => {
+            navigation.navigate("BookYourSlotScreen");
+          }}
+        />
       </View>
     </TouchableWithoutFeedback>
   );

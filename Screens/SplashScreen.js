@@ -28,7 +28,7 @@ function SplashScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require("../assets/splashSky.jpeg")}
+      source={require("../assets/selfSplash.jpg")}
       imageStyle={{ opacity: 0.7 }}
       style={styles.container}
     >

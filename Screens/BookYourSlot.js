@@ -851,7 +851,10 @@ function BookYourSlot({ navigation }) {
       <View style={styles.container}>
         <StatusBar animated={true} backgroundColor="#207502" />
         <View elevation={5} style={styles.profileView}>
-          <Menu OnPress={() => navigation.openDrawer()} />
+          <Menu
+            OnPress={() => navigation.openDrawer()}
+            screenName="Book Your Slot"
+          />
           <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
             <Avatar.Text
               size={42}
@@ -878,6 +881,8 @@ function BookYourSlot({ navigation }) {
                   setDistToggle(false);
                   setFocus(true);
                   setState("");
+                  setDistrict("");
+                  setCrop("");
                   setIndexOfState(0);
                 }}
                 onChangeText={(text) => {
@@ -910,6 +915,7 @@ function BookYourSlot({ navigation }) {
                   setDistToggle(true);
                   setFocus(true);
                   setDistrict("");
+                  setCrop("");
                 }}
                 onChangeText={(text) => {
                   setDistrict(text);
@@ -995,7 +1001,7 @@ function BookYourSlot({ navigation }) {
               }}
             >
               <Text style={{ alignItems: "center", color: "#fff" }}>
-                Get Crop Price
+                Get Slot Details
               </Text>
             </TouchableOpacity>
           </View>

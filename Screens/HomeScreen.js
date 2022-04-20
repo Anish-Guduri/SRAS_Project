@@ -18,7 +18,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Avatar } from "react-native-paper";
-
+import BottomBar from "../components/BottomBar";
 function HomeScreen({ navigation }) {
   const [email, setEmail] = React.useState("");
   const [name, setName] = React.useState("");
@@ -141,6 +141,19 @@ function HomeScreen({ navigation }) {
             }}
           ></View>
         </TouchableOpacity>
+        <Text
+          style={{
+            marginTop: 8,
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 22,
+            color: "white",
+            fontWeight: "bold",
+            textAlign: "left",
+          }}
+        >
+          Home
+        </Text>
         <TouchableOpacity
           style={{ marginRight: 40, marginTop: 4 }}
           onPress={() => navigation.navigate("EditProfileScreen", { userID })}
@@ -212,45 +225,18 @@ function HomeScreen({ navigation }) {
           Check your Soil Analysis
         </Text>
       </TouchableOpacity>
-      <View elevation={5} style={styles.bottomBar}>
-        <TouchableOpacity
-          elevation={10}
-          style={styles.bottomButtons}
-          onPress={() => navigation.navigate("BookYourSlotScreen")}
-        >
-          <Image
-            source={require("../assets/CropPrice.png")}
-            style={{ height: 24, width: 24 }}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          elevation={10}
-          style={styles.bottomButtons}
-          onPress={() => navigation.navigate("BookYourSlotScreen")}
-        >
-          <MaterialCommunityIcons
-            name="store-outline"
-            size={30}
-            color="white"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          elevation={10}
-          style={styles.bottomButtons}
-          onPress={() =>
-            navigation.navigate("EditProfileScreen", {
-              userID: userID,
-            })
-          }
-        >
-          <MaterialCommunityIcons
-            name="account-outline"
-            size={30}
-            color="white"
-          />
-        </TouchableOpacity>
-      </View>
+      <BottomBar
+        style={{ marginBottom: 6 }}
+        onPersonPress={() => {
+          navigation.navigate("EditProfileScreen", { userID: userID });
+        }}
+        onPricePress={() => {
+          navigation.navigate("CropPriceScreen");
+        }}
+        onBookPress={() => {
+          navigation.navigate("BookYourSlotScreen");
+        }}
+      />
     </View>
   );
 }
