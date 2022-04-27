@@ -145,6 +145,7 @@ function BookingHistory({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar animated={true} backgroundColor="#207502" />
+      <Text>Hello World !</Text>
       {/* <View elevation={5} style={styles.profileView}>
         <TouchableOpacity
           style={{ marginTop: 8, marginLeft: 12, padding: 4 }}

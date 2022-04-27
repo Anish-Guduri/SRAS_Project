@@ -70,7 +70,7 @@ function SoilAnalysis({ route, navigation }) {
       {/* {!isDataCalled ? ( */}
       <View style={{ flex: 1, alignItems: "center" }}>
         <View style={styles.table}>
-          <Text style={styles.tableHeaderText}>Device Moisture Percentage</Text>
+          <Text style={styles.tableHeaderText}>Soil Moisture Percentage</Text>
         </View>
         <View style={styles.tableDataColoumn}>
           {isDataCalled ? (

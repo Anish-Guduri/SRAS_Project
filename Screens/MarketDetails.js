@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   FlatList,
   ImageBackground,
+  ActivityIndicator,
   Alert,
 } from "react-native";
 import BottomBar from "../components/BottomBar";
@@ -30,10 +31,11 @@ import { Avatar } from "react-native-paper";
 import Menu from "../components/Menu";
 function MarketDetails({ route, navigation }) {
   const { state, district, crop } = route.params;
-  const [loading, setLoading] = React.useState(false);
+  // const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [marketData, setMarketData] = React.useState([]);
   const [userID, setUserId] = React.useState(null);
+  const [loading, setIsLoading] = React.useState(false);
   React.useEffect(() => {
     onAuthStateChanged(authentication, (user) => {
       if (user) {
