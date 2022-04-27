@@ -2,20 +2,23 @@ import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { authentication } from "../firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, updateProfile, signOut } from "firebase/auth";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Drawer } from "react-native-paper";
+import { set } from "date-fns/esm";
 
 function DrawerContent({ navigation }) {
   const [userID, setUserId] = React.useState(null);
+  const [userName, setUserName] = React.useState("");
   React.useEffect(() => {
     onAuthStateChanged(authentication, (user) => {
       if (user) {
-        // setEmail(user.email);
-        // setName(user.displayName);
+        console.log(user.displayName);
         setUserId(user.uid);
+        setUserName(user.displayName);
+        console.log(userName);
         // Alert.alert(userID);
       } else {
         navigation.navigate("Login");
@@ -57,7 +60,10 @@ function DrawerContent({ navigation }) {
               <Text style={{ color: "#000", fontSize: 16 }}>Edit Profile</Text>
             }
             onPress={() =>
-              navigation.navigate("EditProfileScreen", { userID: userID })
+              navigation.navigate("EditProfileScreen", {
+                userID: userID,
+                userName: userName,
+              })
             }
           />
           <Drawer.Item
@@ -85,7 +91,12 @@ function DrawerContent({ navigation }) {
             label={
               <Text style={{ color: "#000", fontSize: 16 }}>Soil Analysis</Text>
             }
-            onPress={() => navigation.navigate("SoilAnalysisScreen")}
+            onPress={() =>
+              navigation.navigate("SoilAnalysisScreen", {
+                userID: userID,
+                userName: userName,
+              })
+            }
           />
           <Drawer.Item
             // style={{ backgroundColor: "#64ffda" }}

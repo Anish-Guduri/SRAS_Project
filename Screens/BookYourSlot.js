@@ -839,6 +839,9 @@ function BookYourSlot({ navigation }) {
         navigation.navigate("Login");
       }
     });
+    setState("");
+    setDistrict("");
+    setCrop("");
   }, []);
 
   return (

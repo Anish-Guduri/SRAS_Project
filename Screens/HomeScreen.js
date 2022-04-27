@@ -219,7 +219,12 @@ function HomeScreen({ navigation }) {
           backgroundColor: "#207502",
           borderRadius: 16,
         }}
-        onPress={() => navigation.navigate("SoilAnalysisScreen")}
+        onPress={() =>
+          navigation.navigate("SoilAnalysisScreen", {
+            userID: userID,
+            userName: name,
+          })
+        }
       >
         <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
           Check your Soil Analysis

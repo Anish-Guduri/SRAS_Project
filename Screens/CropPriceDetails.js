@@ -188,45 +188,6 @@ function CropPriceDetails({ route, navigation }) {
           </View>
         )}
       </View>
-      {/* <View elevation={5} style={styles.bottomBar}>
-        <TouchableOpacity
-          elevation={10}
-          style={styles.bottomButtons}
-          onPress={() => navigation.navigate("BookYourSlotScreen")}
-        >
-          <Image
-            source={require("../assets/CropPrice.png")}
-            style={{ height: 24, width: 24 }}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          elevation={10}
-          style={styles.bottomButtons}
-          onPress={() => navigation.navigate("BookYourSlotScreen")}
-        >
-          <MaterialCommunityIcons
-            name="store-outline"
-            size={30}
-            color="white"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          elevation={10}
-          style={styles.bottomButtons}
-          onPress={() =>
-            navigation.navigate("EditProfileScreen", {
-              userID: userID,
-            })
-          }
-        >
-          <MaterialCommunityIcons
-            name="account-outline"
-            size={30}
-            color="white"
-          />
-        </TouchableOpacity>
-      </View> */}
       <BottomBar
         onPersonPress={() => {
           navigation.navigate("EditProfileScreen", { userID: userID });

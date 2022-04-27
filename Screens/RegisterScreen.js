@@ -11,7 +11,11 @@ import {
 } from "react-native";
 
 import { authentication, db } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendEmailVerification,
+} from "firebase/auth";
 import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 function RegisterScreen({ navigation }) {
   // const [isSignedIn, setIsSignedIn] = React.useState(false);
@@ -29,6 +33,7 @@ function RegisterScreen({ navigation }) {
       createUserWithEmailAndPassword(authentication, email, password)
         .then(() => {
           const user = authentication.currentUser;
+
           updateProfile(authentication.currentUser, {
             displayName: name,
           })
@@ -57,8 +62,11 @@ function RegisterScreen({ navigation }) {
             .catch((error) => {
               Alert.alert(error.message);
             });
-          Alert.alert("Account created successfully!" + user.uid);
-          navigation.navigate("Home");
+          Alert.alert("Account created successfully!");
+          sendEmailVerification(authentication.currentUser).then(() => {
+            Alert("Email Sent ,Please verify your email before login");
+          });
+          navigation.navigate("Login");
         })
         .catch((error) => {
           Alert.alert(error.message);

@@ -11,7 +11,7 @@ function Menu({ OnPress, screenName }) {
   return (
     <View style={{ flexDirection: "row" }}>
       <TouchableOpacity
-        style={{ flex: 1, marginTop: 8, marginLeft: 12, padding: 4 }}
+        style={{ flex: 1, marginTop: 8, marginLeft: 12, padding: 8 }}
         onPress={OnPress}
       >
         <View style={styles.bar}></View>

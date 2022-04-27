@@ -12,6 +12,7 @@ import {
   ImageBackground,
   Alert,
 } from "react-native";
+import BottomBar from "../components/BottomBar";
 import { DrawerActions } from "@react-navigation/native";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { authentication, db } from "../firebase";
@@ -32,6 +33,7 @@ function MarketDetails({ route, navigation }) {
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [marketData, setMarketData] = React.useState([]);
+  const [userID, setUserId] = React.useState(null);
   React.useEffect(() => {
     onAuthStateChanged(authentication, (user) => {
       if (user) {
@@ -40,6 +42,7 @@ function MarketDetails({ route, navigation }) {
         navigation.navigate("Login");
       }
     });
+    setData([]);
     async () => {
       setData([]);
       setLoading(true);
@@ -61,9 +64,6 @@ function MarketDetails({ route, navigation }) {
         console.log(data[i].slotsAvilable);
         console.log("---------------------");
       }
-      // if (data.length == 0) {
-      //   Alert.alert("No markets Found");
-      // }
     };
     setLoading(false);
     getSlotData();
@@ -90,9 +90,9 @@ function MarketDetails({ route, navigation }) {
       console.log(data[i].slotsAvilable);
       console.log("---------------------");
     }
-    if (data.length == 0) {
-      Alert.alert("No markets Found");
-    }
+    // if (data.length == 0) {
+    //   Alert.alert("No markets Found");
+    // }
   };
   const getcrop = async (email) => {
     const subColRef = query(
@@ -104,16 +104,10 @@ function MarketDetails({ route, navigation }) {
       setData((currentObject) => [...currentObject, doc.data()]);
     });
   };
-  const bookSlot = async () => {
-    Alert.alert("clicked");
+  const bookSlot = async (email) => {
+    // Alert.alert("clicked");
 
-    const sfDocRef = doc(
-      db,
-      "marketAdmin",
-      "harshguduri@yahoo.com",
-      "crops",
-      crop
-    );
+    const sfDocRef = doc(db, "marketAdmin", email, "crops", crop);
 
     try {
       const newSlotsAvailable = await runTransaction(
@@ -128,6 +122,7 @@ function MarketDetails({ route, navigation }) {
           if (newSlots >= 0) {
             transaction.update(sfDocRef, { slotsAvilable: newSlots });
             Alert.alert("Slot Booked SuccessFully!");
+            navigation.navigate("BookYourSlotScreen");
             return newSlots;
           } else {
             Alert.alert("No Slots Available");
@@ -145,7 +140,7 @@ function MarketDetails({ route, navigation }) {
     <View style={styles.container}>
       <StatusBar animated={true} backgroundColor="#207502" />
       <View elevation={5} style={styles.profileView}>
-        <Menu OnPress={() => navigation.openDrawer()} />
+        <Menu OnPress={() => navigation.openDrawer()} screenName="Markets" />
         <TouchableOpacity style={{ marginRight: 40, marginTop: 4 }}>
           <Avatar.Text
             size={42}
@@ -155,13 +150,17 @@ function MarketDetails({ route, navigation }) {
           />
         </TouchableOpacity>
       </View>
-      <View style={{ alignItems: "center" }}>
-        <Text>Hello</Text>
-        <Text>{state}</Text>
-        <Text>{district}</Text>
-        <Text>{crop}</Text>
-      </View>
-
+      <Text
+        style={{
+          marginTop: 10,
+          textAlign: "center",
+          color: "#207502",
+          fontWeight: "bold",
+          fontSize: 18,
+        }}
+      >
+        Available Markets in {district}
+      </Text>
       <View
         style={{
           flex: 1,
@@ -170,33 +169,6 @@ function MarketDetails({ route, navigation }) {
           margin: 16,
         }}
       >
-        {/* <View style={styles.table}>
-          <Text
-            style={[
-              styles.tableHeaderText,
-              { borderRightColor: "#fff", borderRightWidth: 1 },
-            ]}
-          >
-            Market
-          </Text>
-          <Text
-            style={[
-              styles.tableHeaderText,
-              { borderRightColor: "#fff", borderRightWidth: 1 },
-            ]}
-          >
-            Commodity
-          </Text>
-          <Text
-            style={[
-              styles.tableHeaderText,
-              { borderRightColor: "#fff", borderRightWidth: 1 },
-            ]}
-          >
-            Mimimum Price
-          </Text>
-          <Text style={styles.tableHeaderText}>Slots Available</Text>
-        </View> */}
         {loading && (
           <ActivityIndicator
             style={{ height: 120 }}
@@ -209,47 +181,28 @@ function MarketDetails({ route, navigation }) {
             data={data}
             renderItem={({ item }) => (
               <View>
-                {/* <View
-                  style={{
-                    flexDirection: "row",
-                    borderBottomWidth: 1,
-                    borderColor: "#207502",
-                  }}
-                >
-                  <Text
-                    style={[
-                      styles.tableDataColoumn,
-                      {
-                        borderLeftWidth: 1,
-                        borderLeftColor: "#207502",
-                      },
-                    ]}
-                  >
-                    {item.marketName}
-                  </Text>
-                  <Text style={styles.tableDataColoumn}>{item.cropName}</Text>
-                  <Text style={styles.tableDataColoumn}>
-                    {item.minimumPrice}
-                  </Text>
-                  <Text style={styles.tableDataColoumn}>
-                    {item.slotsAvilable}
-                  </Text>
-                </View> */}
                 <View style={styles.dataContainer}>
                   <View style={{ flexDirection: "row" }}>
                     <Text style={styles.dataLabel}>Market:</Text>
                     <Text style={styles.actualData}>{item.marketName}</Text>
-                    {/* <Text>{marketData.marketName}</Text> */}
                     <Text style={styles.dataLabel}>Crop:</Text>
                     <Text style={styles.actualData}>{item.cropName}</Text>
                   </View>
-                  <View style={{ flexDirection: "row", marginTop: 6 }}>
+                  <View style={styles.rowData}>
                     <Text style={styles.dataLabel}>Minimum Price:</Text>
                     <Text style={styles.actualData}>{item.minimumPrice}</Text>
                     {/* <Text>{marketData.marketName}</Text> */}
                     <Text style={styles.dataLabel}>slots Available:</Text>
                     <Text style={styles.actualData}>{item.slotsAvilable}</Text>
                   </View>
+
+                  {/* <View style={styles.rowData}>
+                    <Text style={styles.dataLabel}>email:</Text>
+                    <Text style={styles.actualData}>{item.email}</Text> */}
+                  {/* <Text>{marketData.marketName}</Text> */}
+                  {/* <Text style={styles.dataLabel}>District:</Text> */}
+                  {/* <Text style={styles.actualData}>{item.district}</Text> */}
+                  {/* </View> */}
                   <TouchableOpacity
                     style={{
                       height: 36,
@@ -261,7 +214,7 @@ function MarketDetails({ route, navigation }) {
                       justifyContent: "center",
                       borderRadius: 8,
                     }}
-                    onPress={bookSlot}
+                    onPress={() => bookSlot(item.email)}
                   >
                     <Text
                       style={{
@@ -293,6 +246,18 @@ function MarketDetails({ route, navigation }) {
           </View>
         )}
       </View>
+      <BottomBar
+        style={{ marginBottom: 6 }}
+        onPersonPress={() => {
+          navigation.navigate("EditProfileScreen", { userID: userID });
+        }}
+        onPricePress={() => {
+          navigation.navigate("CropPriceScreen");
+        }}
+        onBookPress={() => {
+          navigation.navigate("BookYourSlotScreen");
+        }}
+      />
     </View>
   );
 }
@@ -372,6 +337,10 @@ const styles = StyleSheet.create({
     marginRight: 6,
     color: "#207502",
     fontWeight: "bold",
+  },
+  rowData: {
+    flexDirection: "row",
+    marginTop: 6,
   },
   actualData: {
     marginRight: 24,

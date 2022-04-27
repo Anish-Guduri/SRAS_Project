@@ -11,7 +11,11 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { authentication } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  sendEmailVerification,
+} from "firebase/auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 function LoginScreen({ navigation }) {
@@ -31,10 +35,14 @@ function LoginScreen({ navigation }) {
     signInWithEmailAndPassword(authentication, email, password)
       .then((userCredential) => {
         console.log("Signed in");
-        Alert.alert("Logged In Succesfully");
-        navigation.navigate("Home");
-
         const user = userCredential.user;
+        if (user.emailVerified === true) {
+          Alert.alert("Logged In Succesfully");
+          navigation.navigate("Home");
+        } else {
+          signOut(authentication);
+          Alert.alert("please verify your email");
+        }
         console.log(user);
       })
       .catch((error) => {
