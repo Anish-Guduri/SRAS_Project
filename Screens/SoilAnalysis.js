@@ -8,6 +8,7 @@ import {
   FlatList,
   StatusBar,
   TouchableOpacity,
+  ActivityIndicator,
   Alert,
 } from "react-native";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -29,11 +30,12 @@ function SoilAnalysis({ route, navigation }) {
   const [isDataCalled, setIsDataCalled] = React.useState(false);
   const [data, setData] = React.useState([]);
   React.useEffect(() => {
-    userDetails(userID);
+    // userDetails(userID);
     setIsDataCalled(false);
     return () => {};
   }, []);
   const userDetails = async (userID) => {
+    setIsDataCalled(true);
     const docRef = doc(db, "users", userID);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -41,8 +43,10 @@ function SoilAnalysis({ route, navigation }) {
       setMoisturePercentage(docSnap.data().moisturePercentage);
       setData(docSnap.data().moistureData);
       console.log(data);
+      setIsDataCalled(false);
     } else {
       console.log("No such document!");
+      setMoisturePercentage(0);
     }
   };
   return (
@@ -63,94 +67,55 @@ function SoilAnalysis({ route, navigation }) {
         </TouchableOpacity>
       </View>
       <Text style={styles.screenHeaderText}>Soil Anlaysis</Text>
-
-      {!isDataCalled ? (
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <View style={styles.table}>
-            <Text style={styles.tableHeaderText}>
-              Device Moisture Percentage
-            </Text>
-          </View>
-          <Text style={styles.tableDataColoumn}>{moisturePercentage}</Text>
-          <View style={[styles.table, { marginTop: "16%" }]}>
-            <Text style={styles.tableHeaderText}>
-              Ideal Moisture Percentage Range
-            </Text>
-          </View>
-          <Text style={styles.tableDataColoumn}> 60% - 80% </Text>
-
-          <TouchableOpacity
-            style={{
-              marginTop: "24%",
-              width: "80%",
-              height: "10%",
-              backgroundColor: "#207502",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 16,
-            }}
-            onPress={() => setIsDataCalled(true)}
-          >
-            <Text
-              style={{ color: "#ffffff", fontSize: 24, fontWeight: "bold" }}
-            >
-              Soil Data
-            </Text>
-          </TouchableOpacity>
+      {/* {!isDataCalled ? ( */}
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={styles.table}>
+          <Text style={styles.tableHeaderText}>Device Moisture Percentage</Text>
         </View>
-      ) : (
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <View style={[styles.table, { width: "94%" }]}>
-            <Text style={[styles.tableHeaderText, { width: "43.8%" }]}>
-              Date
-            </Text>
-            <Text
-              style={[
-                styles.tableHeaderText,
-                { borderLeftColor: "#fff", borderLeftWidth: 2 },
-              ]}
-            >
-              Moisture Percentage
-            </Text>
-          </View>
-          <FlatList
-            data={data}
-            renderItem={({ item }) => (
-              <View
-                style={{
-                  flexDirection: "row",
-                  flex: 1,
-                  borderBottomWidth: 1,
-                  borderColor: "#207502",
-                }}
-              >
-                <Text
-                  style={[
-                    styles.tableDataColoumn,
-                    {
-                      width: "47%",
-                      height: "25%",
-                      borderLeftWidth: 1,
-                      borderLeftColor: "#207502",
-                    },
-                  ]}
-                >
-                  {item.moisturePercentage}"hello"
-                </Text>
-                <Text
-                  style={[
-                    styles.tableDataColoumn,
-                    { width: "47%", height: "25%" },
-                  ]}
-                >
-                  {item.moisturePercentage}
-                </Text>
-              </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
+        <View style={styles.tableDataColoumn}>
+          {isDataCalled ? (
+            <ActivityIndicator
+              style={{ height: 120 }}
+              color="#207502"
+              size="large"
+            />
+          ) : (
+            <Text style={{ fontSize: 18 }}>{moisturePercentage}</Text>
+          )}
         </View>
-      )}
+        <View style={[styles.table, { marginTop: "16%" }]}>
+          <Text style={styles.tableHeaderText}>
+            Ideal Moisture Percentage Range
+          </Text>
+        </View>
+        <Text style={styles.tableDataColoumn}> 60% - 80% </Text>
+
+        <TouchableOpacity
+          style={{
+            marginTop: "24%",
+            width: "80%",
+            height: "10%",
+            backgroundColor: "#207502",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 16,
+          }}
+          onPress={() => {
+            userDetails(userID);
+          }}
+        >
+          <Text style={{ color: "#ffffff", fontSize: 24, fontWeight: "bold" }}>
+            Get Soil Data
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {/* ) : (
+        <ActivityIndicator
+          style={{ height: 120 }}
+          color="#207502"
+          size="large"
+        />
+      )} */}
       <BottomBar
         style={{ marginBottom: 6 }}
         onPersonPress={() => {
