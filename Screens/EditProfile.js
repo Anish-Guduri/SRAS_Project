@@ -5,6 +5,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
+  TextInput,
+  Picker,
+  ScrollView,
   Alert,
 } from "react-native";
 import { DrawerActions } from "@react-navigation/native";
@@ -16,6 +19,7 @@ import {
   getDoc,
   getDocs,
   query,
+  setDoc,
   where,
   collectionGroup,
   runTransaction,
@@ -27,7 +31,9 @@ function EditProfile({ route, navigation }) {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [gender, setGender] = React.useState("");
-  const [slotCount, setSlotCount] = React.useState(0);
+  const [phoneNumber, setPhoneNumber] = React.useState("");
+  const [errorPhoneNumber, seterrorPhoneNumber] = React.useState("");
+  const [click, setClick] = React.useState(true);
   const [data, setData] = React.useState([]);
   React.useEffect(() => {
     userDetails(userID);
@@ -36,8 +42,6 @@ function EditProfile({ route, navigation }) {
       setName();
       setEmail();
       setGender();
-      setSlotCount();
-      // setData([]);
     };
   }, []);
 
@@ -53,94 +57,20 @@ function EditProfile({ route, navigation }) {
       console.log("No such document!");
     }
   };
-  // const slotsAvailable = async () => {
-  //   const docRef = doc(db, "slotBooking", "market");
-  //   const docSnap = await getDoc(docRef);
-  //   if (docSnap.exists()) {
-  //     console.log("Document data:", docSnap.data());
-  //     setSlotCount(docSnap.data().slotsAvailable);
-  //   } else {
-  //     console.log("No such document!");
-  //   }
-  // };
-  const bookSlot = async () => {
-    Alert.alert("clicked");
-
-    const sfDocRef = doc(
-      db,
-      "marketAdmin",
-      "harshguduri@yahoo.com",
-      "crops",
-      "wheat"
-    );
-
-    try {
-      const newSlotsAvailable = await runTransaction(
-        db,
-        async (transaction) => {
-          const sfDoc = await transaction.get(sfDocRef);
-          if (!sfDoc.exists()) {
-            throw "Document does not exist!";
-          }
-
-          const newSlots = sfDoc.data().slotsAvilable - 1;
-          if (newSlots >= 0) {
-            transaction.update(sfDocRef, { slotsAvilable: newSlots });
-            return newSlots;
-          } else {
-            Alert.alert("No Slots Available");
-            return Promise.reject("Sorry! slotsAvilable  are not available");
-          }
-        }
-      );
-
-      console.log("slotsAvilable increased to ", newSlotsAvailable);
-    } catch (e) {
-      console.error(e);
+  const validate = () => {
+    let pattern = /^[789]\d{9}$/;
+    if (pattern.test(phoneNumber) && phoneNumber !== "") {
+      const userRef = doc(db, "users", userID);
+      setDoc(userRef, {
+        name: name,
+        email: email,
+        gender: gender,
+        phoneNumber: phoneNumber,
+      }),
+        Alert.alert("Data Saved Successfully");
+    } else {
+      seterrorPhoneNumber("Enter a Valid Phone Number");
     }
-  };
-  const getSlotData = async () => {
-    setData([]);
-    console.log("Button clicked");
-    // const crops = query(
-    //   collectionGroup(db, "crops"),
-    //   where("cropName", "==", "corn")
-    //   // where("slotsAvilable", ">", 0)
-    // );
-    // const querySnapshot = await getDocs(crops);
-    // querySnapshot.forEach((doc) => {
-    //   // console.log(doc.data());
-    //   setData((currentObject) => [...currentObject, doc.data()]);
-    // });
-    //
-
-    const q = query(collection(db, "marketAdmin"));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      getcrop(doc.id);
-    });
-    console.log(
-      "========================Below is the Data======================"
-    );
-    for (let i = 0; i < data.length; i++) {
-      console.log(data[i].cropName);
-      console.log(data[i].minimumPrice);
-      console.log(data[i].slotsAvilable);
-      console.log("---------------------");
-    }
-  };
-  const getcrop = async (email) => {
-    const subColRef = query(
-      collection(db, "marketAdmin", email, "crops"),
-      where("cropName", "==", "wheat")
-    );
-    const qSnap = await getDocs(subColRef);
-    qSnap.forEach((doc) => {
-      // console.log(doc.id, " => ", doc.data().slotsAvilable);
-      // setData(doc.data());
-      // console.log(data);
-      setData((currentObject) => [...currentObject, doc.data()]);
-    });
   };
   return (
     <View style={styles.container}>
@@ -182,80 +112,103 @@ function EditProfile({ route, navigation }) {
           <Avatar.Text
             size={42}
             label="A"
-            color="#000"
+            color="#207502"
             style={{ backgroundColor: "#fff" }}
           />
         </TouchableOpacity>
       </View>
-      <Text style={{ textAlign: "center" }}>Edit Profile Screen</Text>
-      <View style={{ margin: 24, padding: 12 }}>
+      <ScrollView>
         <Text
           style={{
-            marginTop: 24,
-            marginBottom: 8,
+            marginTop: 12,
+            marginBottom: 32,
+            marginLeft: 28,
+            fontSize: 28,
+            fontWeight: "bold",
+            color: "#207502",
           }}
         >
-          {name}
+          User Details
         </Text>
         <Text
           style={{
-            marginBottom: 8,
-            // height: 52,
+            marginLeft: 28,
+            marginTop: 12,
+            fontSize: 14,
+            color: "#207502",
           }}
         >
-          {email}
+          Name
         </Text>
+        <Text style={styles.textInpt}>{name}</Text>
         <Text
           style={{
-            marginBottom: 8,
-            // height: 52,
+            marginLeft: 28,
+            marginTop: 12,
+            fontSize: 14,
+            color: "#207502",
           }}
         >
-          {gender}
+          Email
         </Text>
+        <Text style={styles.textInpt}>{email}</Text>
+
+        {/* <TextInput style={styles.textInpt} value={email} disabled /> */}
         <Text
           style={{
-            marginBottom: 8,
-            // height: 52,
+            marginLeft: 28,
+            marginTop: 12,
+            fontSize: 14,
+            color: "#207502",
           }}
         >
-          {userID}
+          Gender
         </Text>
-      </View>
-      <View style={{ marginTop: 24, alignItems: "center" }}>
-        <Text style={{ marginBottom: 24 }}>Available Slots : {slotCount}</Text>
-        <TouchableOpacity
+        {click ? (
+          <Picker
+            selectedValue={gender}
+            style={[styles.textInpt, { height: 50, width: 150 }]}
+            onValueChange={(itemValue, itemIndex) => {
+              setGender(itemValue);
+              setClick(false);
+            }}
+            disabled={!click}
+          >
+            <Picker.Item label="Female" value="Female" />
+            <Picker.Item label="Male" value="Male" />
+          </Picker>
+        ) : (
+          <TouchableOpacity onPress={setClick(true)}>
+            <Text style={styles.textInpt}>{name}</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* <Text style={styles.errorText}>{errorPassword}</Text> */}
+        <Text
           style={{
-            height: 52,
-            width: "64%",
-            backgroundColor: "#207502",
-            alignItem: "center",
-            justifyContent: "center",
-            borderRadius: 12,
+            marginLeft: 28,
+            marginTop: 12,
+            fontSize: 14,
+            color: "#207502",
           }}
-          onPress={bookSlot}
         >
-          <Text style={{ color: "#fff", fontSize: 18, textAlign: "center" }}>
-            Book Slot
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            height: 52,
-            width: "64%",
-            marginTop: 24,
-            backgroundColor: "#207502",
-            alignItem: "center",
-            justifyContent: "center",
-            borderRadius: 12,
-          }}
-          onPress={getSlotData}
-        >
-          <Text style={{ color: "#fff", fontSize: 18, textAlign: "center" }}>
-            get slot data
-          </Text>
-        </TouchableOpacity>
-      </View>
+          Phone number
+        </Text>
+        <TextInput
+          style={styles.textInpt}
+          placeholder="Enter password"
+          keyboardType="numeric"
+          value={phoneNumber}
+          onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
+          onFocus={() => seterrorPhoneNumber("")}
+        />
+        <Text style={styles.errorText}>{errorPhoneNumber}</Text>
+        <View style={{ alignItems: "center" }}>
+          <TouchableOpacity onPress={() => validate()} style={styles.btn}>
+            <Text style={styles.btnText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -279,6 +232,40 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginTop: 8,
     paddingLeft: 20,
+  },
+  textInpt: {
+    width: "80%",
+    height: 36,
+    fontSize: 16,
+    paddingLeft: 4,
+    paddingBottom: 0,
+    borderBottomColor: "#207502",
+    borderBottomWidth: 1,
+    marginLeft: 28,
+    marginTop: 6,
+    marginBottom: 4,
+  },
+  errorText: {
+    marginBottom: 10,
+    marginLeft: 28,
+    paddingLeft: 6,
+    fontSize: 12,
+    color: "#a4161a",
+  },
+  btn: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 240,
+    height: 52,
+    marginTop: 44,
+    marginBottom: 8,
+    borderRadius: 20,
+    backgroundColor: "#207502",
+  },
+  btnText: {
+    color: "#fff",
+    fontSize: 26,
+    fontWeight: "bold",
   },
 });
 export default EditProfile;

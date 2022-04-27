@@ -64,6 +64,13 @@ function DrawerRoutes() {
           headerShown: false,
         }}
       />
+      <Drawer.Screen
+        name="BookingHistory"
+        component={BookingHistory}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Drawer.Navigator>
   );
 }

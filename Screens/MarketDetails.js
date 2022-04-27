@@ -17,6 +17,7 @@ import BottomBar from "../components/BottomBar";
 import { DrawerActions } from "@react-navigation/native";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { authentication, db } from "../firebase";
+
 import {
   collection,
   doc,
@@ -24,6 +25,7 @@ import {
   getDocs,
   query,
   where,
+  setDoc,
   collectionGroup,
   runTransaction,
 } from "firebase/firestore";
@@ -31,19 +33,25 @@ import { Avatar } from "react-native-paper";
 import Menu from "../components/Menu";
 function MarketDetails({ route, navigation }) {
   const { state, district, crop } = route.params;
-  // const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [marketData, setMarketData] = React.useState([]);
   const [userID, setUserId] = React.useState(null);
-  const [loading, setIsLoading] = React.useState(false);
+  const [userEmail, setUserEmail] = React.useState("");
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
   React.useEffect(() => {
     onAuthStateChanged(authentication, (user) => {
       if (user) {
+        setUserEmail(user.email);
         setUserId(user.uid);
+        setName(user.displayName);
+        console.log(userEmail);
       } else {
         navigation.navigate("Login");
       }
     });
+    userDetails(userID);
     setData([]);
     async () => {
       setData([]);
@@ -70,7 +78,18 @@ function MarketDetails({ route, navigation }) {
     setLoading(false);
     getSlotData();
   }, []);
-
+  const userDetails = async (userID) => {
+    const docRef = doc(db, "users", userID);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      // setName(docSnap.data().name);
+      // // Alert.alert(name);
+      // setEmail(docSnap.data().email);
+    } else {
+      console.log("No such document!");
+    }
+  };
   const getSlotData = async () => {
     setData([]);
     console.log("Button clicked");
@@ -106,10 +125,17 @@ function MarketDetails({ route, navigation }) {
       setData((currentObject) => [...currentObject, doc.data()]);
     });
   };
-  const bookSlot = async (email) => {
+  const bookSlot = async (
+    adminEmail,
+    date,
+    cropName,
+    market,
+    minimumPrice,
+    marketEmail
+  ) => {
     // Alert.alert("clicked");
 
-    const sfDocRef = doc(db, "marketAdmin", email, "crops", crop);
+    const sfDocRef = doc(db, "marketAdmin", adminEmail, "crops", crop);
 
     try {
       const newSlotsAvailable = await runTransaction(
@@ -123,8 +149,34 @@ function MarketDetails({ route, navigation }) {
           const newSlots = sfDoc.data().slotsAvilable - 1;
           if (newSlots >= 0) {
             transaction.update(sfDocRef, { slotsAvilable: newSlots });
+            const detailsRef = doc(
+              db,
+              "marketAdmin",
+              adminEmail,
+              "detailOfSlots",
+              userEmail
+            );
+            setDoc(detailsRef, {
+              email: userEmail,
+              date: date,
+              name: name,
+            });
+            const userBookingRef = doc(
+              db,
+              "users",
+              userID,
+              "bookingHistory",
+              date
+            );
+            setDoc(userBookingRef, {
+              crop: cropName,
+              date: date,
+              market: market,
+              minimumPrice: minimumPrice,
+              marketEmail: marketEmail,
+            });
             Alert.alert("Slot Booked SuccessFully!");
-            navigation.navigate("BookYourSlotScreen");
+            navigation.navigate("BookingHistory", { userID: userID });
             return newSlots;
           } else {
             Alert.alert("No Slots Available");
@@ -198,13 +250,10 @@ function MarketDetails({ route, navigation }) {
                     <Text style={styles.actualData}>{item.slotsAvilable}</Text>
                   </View>
 
-                  {/* <View style={styles.rowData}>
-                    <Text style={styles.dataLabel}>email:</Text>
-                    <Text style={styles.actualData}>{item.email}</Text> */}
-                  {/* <Text>{marketData.marketName}</Text> */}
-                  {/* <Text style={styles.dataLabel}>District:</Text> */}
-                  {/* <Text style={styles.actualData}>{item.district}</Text> */}
-                  {/* </View> */}
+                  <View style={styles.rowData}>
+                    <Text style={styles.dataLabel}>Available Date:</Text>
+                    <Text style={styles.actualData}>{item.date}</Text>
+                  </View>
                   <TouchableOpacity
                     style={{
                       height: 36,
@@ -216,7 +265,16 @@ function MarketDetails({ route, navigation }) {
                       justifyContent: "center",
                       borderRadius: 8,
                     }}
-                    onPress={() => bookSlot(item.email)}
+                    onPress={() =>
+                      bookSlot(
+                        item.email,
+                        item.date,
+                        item.cropName,
+                        item.marketName,
+                        item.minimumPrice,
+                        item.email
+                      )
+                    }
                   >
                     <Text
                       style={{

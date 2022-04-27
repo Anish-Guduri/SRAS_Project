@@ -160,7 +160,7 @@ function HomeScreen({ navigation }) {
         >
           <Avatar.Text
             size={42}
-            label="A"
+            label={name.charAt(0).toUpperCase()}
             color="#000"
             style={{ backgroundColor: "#fff" }}
           />

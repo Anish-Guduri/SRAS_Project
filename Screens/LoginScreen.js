@@ -11,9 +11,11 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { authentication } from "../firebase";
+
 import {
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
   sendEmailVerification,
 } from "firebase/auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -31,6 +33,19 @@ function LoginScreen({ navigation }) {
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState("");
 
+  const sendmail = () => {
+    onAuthStateChanged(authentication, (user) => {
+      if (user) {
+        Alert(authentication.currentUser);
+        sendEmailVerification(authentication.currentUser).then(() => {
+          Alert("Email Sent ,Please verify your email before login");
+        });
+        signOut(authentication);
+      } else {
+        signOut(authentication);
+      }
+    });
+  };
   const handleSignIn = () => {
     signInWithEmailAndPassword(authentication, email, password)
       .then((userCredential) => {
@@ -41,7 +56,15 @@ function LoginScreen({ navigation }) {
           navigation.navigate("Home");
         } else {
           signOut(authentication);
-          Alert.alert("please verify your email");
+          // Alert.alert("please verify your email");
+          Alert.alert("Verify email", "please verify your email", [
+            {
+              text: "Send Email Again",
+              onPress: () => sendmail(),
+            },
+
+            { text: "OK", onPress: () => console.log("OK Pressed") },
+          ]);
         }
         console.log(user);
       })
